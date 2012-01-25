@@ -1,0 +1,10 @@
+# Apple directory files.
+.DS_Store
+
+# Build Netbeans build directories.
+build/
+dist/
+
+
+
+
