@@ -267,7 +267,7 @@ public class OWLAPIWrapper {
 //    }
     public static void main(String[] args) {
         OWLAPIWrapper owl = new OWLAPIWrapper();
-        String str = owl.loadOntologyFile("/Users/Chris/Desktop/ontology/koala.owl");
+        String str = owl.loadOntologyFile("owlfiles/koala.owl");
 
 //        OWLAPIWrapper owl = new OWLAPIWrapper("./lib/koala.owl");
 //        String str = owl.loadOntologyFile();
