@@ -19,34 +19,31 @@ import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.util.DefaultPrefixManager;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 /**
  *
- * @author Zonglei Jiao
+ * @author Zonglei Jiao & Qiang Liu
  *
  */
 public class OWLAPIWrapper {
+    private OWLDataFactory myFactory;
+    private String base;
+    private DefaultPrefixManager pm;
+    private OWLOntology myOntology;
+    private OWLClass[] allOWLClasses;
 
     private String[] allOWLClassNames;
-    private String[] superClasses;
     private String[] subClassNames;
-    private String[] disjointClasses;
+    private String[] superClassNames;
+    private String[] disjointClassNames;
+    
     private String[] equivalentClasses;
     private String[] individuals;
     private String[] dataProperties;
     private String[] oObjectProperties;
     private String classPrefix;
     private int indexOfsharp;
-    public OWLOntology myOntology;
-//    private IRI myIRI;
-    private OWLDataFactory myFactory;
-    private String base;
-    private DefaultPrefixManager pm;
     
-    private OWLClass[] allOWLClasses;
 
     public OWLAPIWrapper() {
     }
@@ -111,9 +108,9 @@ public class OWLAPIWrapper {
         
         OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
         oceset.toArray(expression);
-        superClasses = getClassShortNames(expression);
+        superClassNames = getClassShortNames(expression);
         
-        return superClasses;
+        return superClassNames;
     }
 
     public String[] getDisjointClasses(String className) {
@@ -126,8 +123,8 @@ public class OWLAPIWrapper {
         
         OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
         oceset.toArray(expression);
-        this.disjointClasses = this.getClassShortNames(expression);
-        return disjointClasses;
+        this.disjointClassNames = this.getClassShortNames(expression);
+        return disjointClassNames;
     }
 
     //TODO -----
@@ -264,7 +261,9 @@ public class OWLAPIWrapper {
         }
 
         System.out.println("=====================Sub Classes============================");
-        String[] sc = owl.getSubClasses("Animal");
+        String className1 = "Animal";
+        String[] sc = owl.getSubClasses(className1);
+        System.out.println(className1+"'s sub classes are:");
 
         if (sc != null) {
             for (String name : sc) {
@@ -275,7 +274,10 @@ public class OWLAPIWrapper {
         }
         
         System.out.println("=====================Super classes============================");
-        String[] suc = owl.getSuperClasses("GraduateStudent");
+        String className2 = "GraduateStudent";
+        String[] suc = owl.getSuperClasses(className2);
+        System.out.println(className2+"'s super classes are:");
+        
         if (sc != null) {
             for (String name : suc) {
                 System.out.println(name);
@@ -285,7 +287,10 @@ public class OWLAPIWrapper {
         }
         
         System.out.println("=====================Disjoint classes============================");
-        String[] dc = owl.getDisjointClasses("Person");
+        String className3 = "Person";
+        String[] dc = owl.getDisjointClasses(className3);
+        System.out.println(className3+"'s disjoint classes are:");
+        
         if (dc != null) {
             for (String name : dc) {
                 System.out.println(name);
