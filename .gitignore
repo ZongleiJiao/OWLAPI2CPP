@@ -1,6 +1,6 @@
 # Apple directory files.
 .DS_Store
-
+*.txt
 # Build Netbeans build directories.
 build/
 dist/
