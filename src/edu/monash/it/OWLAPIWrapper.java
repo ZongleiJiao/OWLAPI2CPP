@@ -2,12 +2,14 @@ package edu.monash.it;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotation;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -18,6 +20,9 @@ import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.model.OWLRuntimeException;
+import org.semanticweb.owlapi.model.PrefixManager;
+import org.semanticweb.owlapi.util.DefaultPrefixManager;
 
 /*
  * To change this template, choose Tools | Templates
@@ -25,13 +30,14 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
  */
 /**
  *
- * @author Chris
+ * @author Zonglei Jiao
+ *
  */
 public class OWLAPIWrapper {
 
-    private String[] allClasses;
+    private String[] allOWLClassNames;
     private String[] superClasses;
-    private String[] subClasses;
+    private String[] subClassNames;
     private String[] disjointClasses;
     private String[] equivalentClasses;
     private String[] individuals;
@@ -40,8 +46,12 @@ public class OWLAPIWrapper {
     private String classPrefix;
     private int indexOfsharp;
     public OWLOntology myOntology;
-    private IRI myIRI;
+//    private IRI myIRI;
     private OWLDataFactory myFactory;
+    private String base;
+    private DefaultPrefixManager pm;
+    
+    private OWLClass[] allOWLClasses;
 
     public OWLAPIWrapper() {
     }
@@ -49,34 +59,20 @@ public class OWLAPIWrapper {
     //loading ontology file, initialize Ontologies(class,individual,property)
     public String loadOntologyFile(String filename) {
         try {
+            File file = new File(filename);
             OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
             myFactory = manager.getOWLDataFactory();
-
-            File file = new File(filename);
-
             myOntology = manager.loadOntologyFromOntologyDocument(file);
-                       
-            
-//            myIRI = manager.getOntologyDocumentIRI(myOntology);
-//            myIRI = IRI.create("http://protege.stanford.edu/plugins/owl/owl-library/koala.owl");
-            myIRI = manager.getOntologyDocumentIRI(myOntology);
 
+            //get all classes from ontology.
             Set<OWLClass> ocset = myOntology.getClassesInSignature();
-            OWLClass[] ocarr = new OWLClass[ocset.size()];
-            ocset.toArray(ocarr);
-            this.allClasses = new String[ocset.size()];
-            for (int i = 0; i < ocarr.length; i++) {
-                allClasses[i] = ocarr[i].toString();
-//                OWLClass cc = ocarr[i];
-
-
-//                Iterator<OWLClassExpression> ss = cc.getSubClasses(myOntology).iterator();
-
-//                while (ss.hasNext()) {
-//                    System.out.println("---1111---"+ss.next().toString());
-//                }
-//                System.out.println("<" + i + ">-=-=-=-=-=-=-=-=-=-" + ocarr[i]);
-            }
+            allOWLClasses = new OWLClass[ocset.size()];
+            ocset.toArray(allOWLClasses);
+            
+            //get ontology base,initialize prefixmanager
+            base = allOWLClasses[1].toString().substring(1,allOWLClasses[1].toString().indexOf("#")+1);
+            pm = new DefaultPrefixManager(base);
+                        
             return myOntology.toString();
 
         } catch (OWLOntologyCreationException ex) {
@@ -88,84 +84,70 @@ public class OWLAPIWrapper {
         }
     }
 
-    //TODO include Thing????
+    //get all class names from the ontology provided
     public String[] getAllOWLClasses() {
-        return this.deleteClassNamePrefix(allClasses);
+        allOWLClassNames = getClassShortNames(allOWLClasses);
+        return allOWLClassNames;
     }
 
-    //TODO duplicate issue (class names)????
+    //get all subclasses of the class provided
     public String[] getSubClasses(String className) {
-        OWLClass clsA = myFactory.getOWLClass(IRI.create(classPrefix.substring(1) + className));
-//        OWLClass clsA = myFactory.getOWLClass(IRI.create(myIRI + "#"+className));
-//        System.out.println(clsA);
-//        Iterator<OWLClassExpression> ss = clsA.getSubClasses(myOntology).iterator();
-//        while(ss.hasNext())
-//        {
-//            System.out.println("---2222---"+ss.next().toString());
-////            this.subClasses = ss.next().toString();
-//        }
-        Set<OWLClassExpression> sset = clsA.getSubClasses(myOntology);
-        if (sset.size() < 1) {
+        OWLClass cls = myFactory.getOWLClass(pm.getIRI(className));
+        Set<OWLClassExpression> oceset = cls.getSubClasses(myOntology);
+      
+        if (oceset.size() < 1) {
             return null;
         }
-//        System.out.println("========123123========="+sset.size());
-        OWLClassExpression[] express = new OWLClassExpression[sset.size()];
-        sset.toArray(express);
-        this.subClasses = new String[express.length];
-        for (int i = 0; i < express.length; i++) {
-            subClasses[i] = express[i].toString();
-        }
-        return deleteSubClassNamePrefix(subClasses);
+        
+        OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
+        oceset.toArray(expression);
+        subClassNames = this.getClassShortNames(expression);
+        return subClassNames;
     }
 
+    //get all superclasses of the class provided
     public String[] getSuperClasses(String className) {
-        OWLClass clsA = myFactory.getOWLClass(IRI.create(classPrefix.substring(1) + className));
-//        Iterator<OWLClassExpression> ss = clsA.getSuperClasses(myOntology).iterator();
-        Set<OWLClassExpression> sset = clsA.getSuperClasses(myOntology);
-        if (sset.size() < 1) {
-//            System.out.println("123123131231");
+        OWLClass cls = myFactory.getOWLClass(pm.getIRI(className));
+
+        Set<OWLClassExpression> oceset = cls.getSuperClasses(myOntology);
+        if (oceset.size() < 1) {
             return null;
         }
-        OWLClassExpression[] express = new OWLClassExpression[sset.size()];
-        sset.toArray(express);
-        this.superClasses = new String[express.length];
-        for (int i = 0; i < express.length; i++) {
-            superClasses[i] = express[i].toString();
-        }
-        return deleteSubClassNamePrefix(superClasses);
+        
+        OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
+        oceset.toArray(expression);
+        superClasses = getClassShortNames(expression);
+        
+        return superClasses;
     }
 
     public String[] getDisjointClasses(String className) {
-        OWLClass clsA = myFactory.getOWLClass(IRI.create(classPrefix.substring(1) + className));
-        Set<OWLClassExpression> sset = clsA.getDisjointClasses(myOntology);
-        if (sset.size() < 1) {
+        OWLClass cls = myFactory.getOWLClass(pm.getIRI(className));
+        Set<OWLClassExpression> oceset = cls.getDisjointClasses(myOntology);
+        
+        if (oceset.size() < 1) {
             return null;
         }
-//        System.out.println("========123123========="+sset.size());
-        OWLClassExpression[] express = new OWLClassExpression[sset.size()];
-        sset.toArray(express);
-        this.disjointClasses = new String[express.length];
-        for (int i = 0; i < express.length; i++) {
-            disjointClasses[i] = express[i].toString();
-        }
-        return deleteSubClassNamePrefix(disjointClasses);
+        
+        OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
+        oceset.toArray(expression);
+        this.disjointClasses = this.getClassShortNames(expression);
+        return disjointClasses;
     }
 
+    //TODO -----
     public String[] getEquivalentClasses(String className) {
-        OWLClass clsA = myFactory.getOWLClass(IRI.create(classPrefix.substring(1) + className));
-        Set<OWLClassExpression> sset = clsA.getEquivalentClasses(myOntology);
-        if (sset.size() < 1) {
-            return null;
-        }
-//        System.out.println("========123123========="+sset.size());
-        OWLClassExpression[] express = new OWLClassExpression[sset.size()];
-        sset.toArray(express);
-        this.equivalentClasses = new String[express.length];
-        for (int i = 0; i < express.length; i++) {
-            equivalentClasses[i] = express[i].toString();
-        }
-//        return deleteSubClassNamePrefix(equivalentClasses);   
-        return this.equivalentClasses;
+//        OWLClass cls = myFactory.getOWLClass(pm.getIRI(className));
+//        Set<OWLClassExpression> oceset = cls.getEquivalentClasses(myOntology);
+//        if (oceset.size() < 1) {
+//            return null;
+//        }
+//        
+//        OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
+//        oceset.toArray(expression);
+//        this.equivalentClasses = this.getClassShortNames(expression);   
+//        return equivalentClasses;
+        return null;
     }
 
     public String[] getIndividuals(String className) {
@@ -180,7 +162,8 @@ public class OWLAPIWrapper {
         for (int i = 0; i < express.length; i++) {
             individuals[i] = express[i].toString();
         }
-        return deleteSubClassNamePrefix(this.individuals);
+//        return deleteSubClassNamePrefix(this.individuals);
+        return null;
     }
 
     public String[] getDataProperties(String className) {
@@ -203,9 +186,12 @@ public class OWLAPIWrapper {
 
     public String[] getObjectProperties(String className) {
         OWLClass cls = myFactory.getOWLClass(IRI.create(classPrefix.substring(1) + className));
+        Set<OWLAnnotation> sss = cls.getAnnotations(myOntology);
+        System.out.println("----------->"+sss);
+        
         Set<OWLObjectProperty> set = cls.getObjectPropertiesInSignature();
         if (set.size() < 1) {
-            System.out.println(className + " null  null");
+            System.out.println(classPrefix.substring(1) + className + " null  null123");
             return null;
         }
         OWLObjectProperty[] express = new OWLObjectProperty[set.size()];
@@ -218,128 +204,130 @@ public class OWLAPIWrapper {
         return null;
     }
 
-    private String[] deleteClassNamePrefix(String[] classes) {
-        String[] classWithoutPrefix = new String[classes.length];
+    private String[] getClassShortNames(OWLClass[] classes)
+    {
+        String[] temp = new String[classes.length];
+        for(int i=0;i<classes.length;i++)
+        {
+            String shortName = pm.getShortForm(classes[i]);
+            if(shortName.equals("owl:Thing"))
+            {
+                shortName = "Thing";
+            }else
+            {
+                shortName = shortName.substring(1);
+            }
+            temp[i] = shortName;            
+        }
+        return temp;
+    }
+    
+    private String[] getClassShortNames(OWLClassExpression[] classExpression)
+    {
+        String[] temp = null;
+        ArrayList al = new ArrayList();
+        for(int i=0;i<classExpression.length;i++)
+        {
+            if(!(classExpression[i].isAnonymous()))
+            {
+                String shortName = pm.getShortForm(classExpression[i].asOWLClass());
 
-        String tempName = classes[1];
-        this.indexOfsharp = tempName.indexOf("#");
-        this.classPrefix = tempName.substring(0, indexOfsharp + 1);
-//        String modifiedName = tempName.substring(indexOfsharp+1, tempName.length()-1);
-//        System.out.println("----->"+this.classPrefix);
-//        System.out.println("----->"+modifiedName);
-
-        classWithoutPrefix[0] = "Thing";
-        for (int i = 0, j = 1; i < classes.length; i++, j++) {
-            if (classes[i].equals("owl:Thing")) {
-                j--;
-            } else {
-                classWithoutPrefix[j] = classes[i].substring(indexOfsharp + 1, classes[i].length() - 1);
+                if(shortName.equals("owl:Thing"))
+                {
+                    shortName = "Thing";
+                }else
+                {
+                    shortName = shortName.substring(1);
+                }
+                al.add(shortName);
             }
         }
-
-        return classWithoutPrefix;
+        
+        if(al.size()==0){
+            temp = new String[1];
+            temp[0] = "Thing";
+        }else{
+            temp = new String[al.size()];
+            al.toArray(temp);
+        }       
+          
+        return temp;
     }
-
-    private String[] deleteSubClassNamePrefix(String[] classes) {
-        if (classes == null || classes.length == 0) {
-            return null;
-        }
-
-        String[] classWithoutPrefix = new String[classes.length];
-//        System.out.println(classes[0]);
-//        String tempName = classes[0];
-//        int indexOfsharp = tempName.indexOf("#");
-//        this.classPrefix = tempName.substring(0, indexOfsharp+1);
-//        String modifiedName = tempName.substring(indexOfsharp+1, tempName.length()-1);
-//        System.out.println("----->"+this.classPrefix);
-//        System.out.println("----->"+modifiedName);
-
-        for (int i = 0; i < classes.length; i++) {
-            classWithoutPrefix[i] = classes[i].substring(indexOfsharp + 1, classes[i].length() - 1);
-        }
-
-        return classWithoutPrefix;
-    }
-
-//    private String addClassNamePrefix(String className)
-//    {
-//        return classPrefix + className + ">";
-//    }
+    
     public static void main(String[] args) {
+        
+        System.out.println("=====================Load Ontology============================");
         OWLAPIWrapper owl = new OWLAPIWrapper();
-        String str = owl.loadOntologyFile("owlfiles/koala.owl");
-
-//        OWLAPIWrapper owl = new OWLAPIWrapper("./lib/koala.owl");
-//        String str = owl.loadOntologyFile();
-        System.out.println(str);
-
-        System.out.println("=====================All Classes============================" + owl.allClasses.length);
-
-        for (String s : owl.allClasses) {
-            System.out.println(s);
-        }
+        String ontostr = owl.loadOntologyFile("owlfiles/koala.owl");
+        System.out.println("loading ontology: "+ontostr);
 
         System.out.println("=====================All Classes(Names)============================");
-        String[] temp = owl.getAllOWLClasses();
-        System.out.println("---->" + temp.length);
-        for (String s1 : temp) {
-            System.out.println(s1);
+        String[] aoc = owl.getAllOWLClasses();
+        System.out.println("Number of classes---->" + aoc.length);
+        for (String name : aoc) {
+            System.out.println(name);
         }
 
         System.out.println("=====================Sub Classes============================");
-        String[] cc = owl.getSubClasses("Animal");
+        String[] sc = owl.getSubClasses("Animal");
 
-
-//        System.out.println();
-        if (cc != null) {
-            for (String s4 : cc) {
-                System.out.println(s4);
+        if (sc != null) {
+            for (String name : sc) {
+                System.out.println(name);
             }
+        }else{
+            System.out.println("No sub classes");
         }
-
-
+        
+        System.out.println("=====================Super classes============================");
+        String[] suc = owl.getSuperClasses("GraduateStudent");
+        if (sc != null) {
+            for (String name : suc) {
+                System.out.println(name);
+            }
+        }else{
+            System.out.println("No super classes");
+        }
+        
         System.out.println("=====================Disjoint classes============================");
         String[] dc = owl.getDisjointClasses("Person");
         if (dc != null) {
-            for (String s5 : dc) {
-                System.out.println(s5);
+            for (String name : dc) {
+                System.out.println(name);
             }
         }
 
-        System.out.println("=====================Equivalent classes============================");
-        String[] ec = owl.getEquivalentClasses("Parent");
-        if (ec != null) {
-            for (String s6 : ec) {
-                System.out.println(s6);
-            }
-        }
-        System.out.println("=====================Super classes============================");
-        String[] sc = owl.getSuperClasses("Person");
-        if (sc != null) {
-            for (String s7 : sc) {
-                System.out.println(s7);
-            }
-        }
-        System.out.println("=====================Individuals============================");
-        String[] in = owl.getIndividuals("Gender");
-        if (in != null) {
-            for (String s8 : in) {
-                System.out.println(s8);
-            }
-        }
-        System.out.println("=====================Object Property============================");
-        String[] op = owl.getDataProperties("Animal");
+//        System.out.println("=====================Equivalent classes============================");
+//        String[] ec = owl.getEquivalentClasses("MaleStudentWith3Daughters");
+//        if (ec != null) {
+//            for (String name : ec) {
+//                System.out.println(name);
+//            }
+//        }
 
-        
-        System.out.println("=====================Axioms============================");
-        Set<OWLAxiom> set = owl.myOntology.getAxioms();
-        OWLAxiom[] oa = new OWLAxiom[set.size()];
-        set.toArray(oa);
-        for(OWLAxiom ooa : oa)
-        {
-          System.out.println(ooa.getAxiomType()+" ------ "+ooa.toString());  
-          
-          
-        }
+////        System.out.println(owl.superClasses);
+//        System.out.println("=====================Individuals============================");
+//        String[] in = owl.getIndividuals("Gender");
+//        if (in != null) {
+//            for (String s8 : in) {
+//                System.out.println(s8);
+//            }
+//        }
+//        System.out.println("=====================Object Property============================");
+//        String[] op = owl.getObjectProperties("Person");
+//
+//        
+//        System.out.println("=====================Axioms============================");
+//        Set<OWLAxiom> set = owl.myOntology.getAxioms();
+//        OWLAxiom[] oa = new OWLAxiom[set.size()];
+//        set.toArray(oa);
+//        for(OWLAxiom ooa : oa)
+//        {
+//          System.out.println(ooa.getAxiomType()+" ------ "+ooa.toString());  
+//          if((ooa.getAxiomType().isAxiomType("FunctionalDataProperty")) == true) 
+//          {
+//              System.out.println("============FunctionalDataProperty");
+//          }
+//        }
     }
 }
