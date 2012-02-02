@@ -1,4 +1,4 @@
-package edu.monash.it;
+package edu.monash.infotech;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -6,12 +6,15 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.EntityType;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLAnnotation;
+import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLDataProperty;
+import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLObjectProperty;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -22,12 +25,12 @@ import org.semanticweb.owlapi.util.DefaultPrefixManager;
 
 /**
  *
- * @author Zonglei Jiao & Qiang Liu
+ * @author Zonglei Jiao
  *
  */
 public class OWLAPIWrapper {
     private OWLDataFactory myFactory;
-    private String base;
+    private String nameSpace;
     private DefaultPrefixManager pm;
     private OWLOntology myOntology;
     private OWLClass[] allOWLClasses;
@@ -42,7 +45,7 @@ public class OWLAPIWrapper {
     private String[] dataProperties;
     private String[] oObjectProperties;
     private String classPrefix;
-    private int indexOfsharp;
+//    private int indexOfsharp;
     
 
     public OWLAPIWrapper() {
@@ -62,8 +65,8 @@ public class OWLAPIWrapper {
             ocset.toArray(allOWLClasses);
             
             //get ontology base,initialize prefixmanager
-            base = allOWLClasses[1].toString().substring(1,allOWLClasses[1].toString().indexOf("#")+1);
-            pm = new DefaultPrefixManager(base);
+            nameSpace = allOWLClasses[1].toString().substring(1,allOWLClasses[1].toString().indexOf("#")+1);
+            pm = new DefaultPrefixManager(nameSpace);
                         
             return myOntology.toString();
 
@@ -85,6 +88,7 @@ public class OWLAPIWrapper {
     //get all subclasses of the class provided
     public String[] getSubClasses(String className) {
         OWLClass cls = myFactory.getOWLClass(pm.getIRI(className));
+                
         Set<OWLClassExpression> oceset = cls.getSubClasses(myOntology);
       
         if (oceset.size() < 1) {
@@ -129,17 +133,21 @@ public class OWLAPIWrapper {
 
     //TODO -----
     public String[] getEquivalentClasses(String className) {
-//        OWLClass cls = myFactory.getOWLClass(pm.getIRI(className));
-//        Set<OWLClassExpression> oceset = cls.getEquivalentClasses(myOntology);
-//        if (oceset.size() < 1) {
-//            return null;
-//        }
-//        
-//        OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
-//        oceset.toArray(expression);
-//        this.equivalentClasses = this.getClassShortNames(expression);   
-//        return equivalentClasses;
-        return null;
+        OWLClass cls = myFactory.getOWLClass(pm.getIRI(className));
+        Set<OWLClassExpression> oceset = cls.getEquivalentClasses(myOntology);System.out.println(cls.toString());
+        if (oceset.size() < 1) {
+            return null;
+        }
+        
+        OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
+        oceset.toArray(expression);
+        for(OWLClassExpression s:expression)
+        {
+            System.out.println(s.toString());
+        }
+        this.equivalentClasses = this.getClassShortNames(expression);   
+        return equivalentClasses;
+//        return null;
     }
 
     public String[] getIndividuals(String className) {
@@ -297,13 +305,13 @@ public class OWLAPIWrapper {
             }
         }
 
-//        System.out.println("=====================Equivalent classes============================");
-//        String[] ec = owl.getEquivalentClasses("MaleStudentWith3Daughters");
-//        if (ec != null) {
-//            for (String name : ec) {
-//                System.out.println(name);
-//            }
-//        }
+        System.out.println("=====================Equivalent classes============================");
+        String[] ec = owl.getEquivalentClasses("MaleStudentWith3Daughters");
+        if (ec != null) {
+            for (String name : ec) {
+                System.out.println(name);
+            }
+        }
 
 ////        System.out.println(owl.superClasses);
 //        System.out.println("=====================Individuals============================");
@@ -317,17 +325,34 @@ public class OWLAPIWrapper {
 //        String[] op = owl.getObjectProperties("Person");
 //
 //        
-//        System.out.println("=====================Axioms============================");
-//        Set<OWLAxiom> set = owl.myOntology.getAxioms();
-//        OWLAxiom[] oa = new OWLAxiom[set.size()];
-//        set.toArray(oa);
-//        for(OWLAxiom ooa : oa)
-//        {
-//          System.out.println(ooa.getAxiomType()+" ------ "+ooa.toString());  
-//          if((ooa.getAxiomType().isAxiomType("FunctionalDataProperty")) == true) 
+        System.out.println("=====================Axioms============================");
+        
+//        OWLClass cls = owl.myFactory.getOWLClass(owl.pm.getIRI("Animal"));
+//        Set<OWLAxiom> set = cls.getReferencingAxioms(owl.myOntology);
+        
+        Set<OWLAxiom> set = owl.myOntology.getAxioms();
+        OWLAxiom[] oa = new OWLAxiom[set.size()];
+        set.toArray(oa);
+        int i=0;
+        for(OWLAxiom ooa : oa)
+        {
+            
+          System.out.println(ooa.getAxiomType()+" ------ "+ooa.toString()); 
+          
+          
+          
+//          if(ooa.getAxiomType().getName().equals("Declaration")) 
 //          {
-//              System.out.println("============FunctionalDataProperty");
+//              System.out.println("============Declaration");i++;
 //          }
-//        }
+        }
+        System.out.println(i);
+        
+        OWLObjectProperty op = owl.myFactory.getOWLObjectProperty(owl.pm.getIRI("hasGender"));
+        
+        
+        
+//        System.out.println(op..getSignature().toArray(new OWLEntity[1])[0]);
+        
     }
 }
