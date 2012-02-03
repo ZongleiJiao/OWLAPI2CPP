@@ -10,8 +10,42 @@ package edu.monash.infotech;
  */
 public class OWLProperty {
     
-    public String propertyType;
-    public String propertyName;
-    public String propertyDomain;
-    public String propertyRange;    
+    String propertyType;
+    String propertyName;
+    String propertyDomain;
+    String propertyRange;
+
+    public String getPropertyDomain() {
+        return propertyDomain;
+    }
+
+    public String getPropertyName() {
+        return propertyName;
+    }
+
+    public String getPropertyRange() {
+        return propertyRange;
+    }
+
+    public String getPropertyType() {
+        return propertyType;
+    }
+
+    public void setPropertyDomain(String propertyDomain) {
+        this.propertyDomain = propertyDomain;
+    }
+
+    public void setPropertyName(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    public void setPropertyRange(String propertyRange) {
+        this.propertyRange = propertyRange;
+    }
+
+    public void setPropertyType(String propertyType) {
+        this.propertyType = propertyType;
+    }
+    
+    
 }
