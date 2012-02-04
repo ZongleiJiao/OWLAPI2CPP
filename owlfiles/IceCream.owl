@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://www.WorkingOntologist.org/Examples/Chapter7/IceCream.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xml:base="http://www.WorkingOntologist.org/Examples/Chapter7/IceCream.owl">
+  <owl:Ontology rdf:about="">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created with TopBraid Composer</owl:versionInfo>
+  </owl:Ontology>
+  <owl:Class rdf:ID="Step">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    ></owl:versionInfo>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Step</rdfs:label>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="dependsOn">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    ></owl:versionInfo>
+    <owl:inverseOf>
+      <owl:ObjectProperty rdf:ID="enables"/>
+    </owl:inverseOf>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:ID="neighborStep"/>
+    </rdfs:subPropertyOf>
+    <rdfs:subPropertyOf>
+      <owl:TransitiveProperty rdf:ID="hasPrerequisite"/>
+    </rdfs:subPropertyOf>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >depends on</rdfs:label>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="otherStep">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    ></owl:versionInfo>
+    <rdfs:range rdf:resource="#Step"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >other step</rdfs:label>
+    <rdfs:domain rdf:resource="#Step"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#enables">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    ></owl:versionInfo>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:about="#neighborStep"/>
+    </rdfs:subPropertyOf>
+    <rdfs:subPropertyOf>
+      <owl:TransitiveProperty rdf:ID="prerequisiteFor"/>
+    </rdfs:subPropertyOf>
+    <rdfs:range rdf:resource="#Step"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >enables</rdfs:label>
+    <rdfs:domain rdf:resource="#Step"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#neighborStep">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    ></owl:versionInfo>
+    <rdfs:subPropertyOf>
+      <owl:TransitiveProperty rdf:ID="inSameRecipe"/>
+    </rdfs:subPropertyOf>
+    <rdfs:range rdf:resource="#Step"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >neighbor step</rdfs:label>
+    <rdfs:domain rdf:resource="#Step"/>
+  </owl:ObjectProperty>
+  <owl:TransitiveProperty rdf:about="#prerequisiteFor">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    ></owl:versionInfo>
+    <rdfs:subPropertyOf rdf:resource="#otherStep"/>
+    <rdfs:range rdf:resource="#Step"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >prerequisite for</rdfs:label>
+    <rdfs:domain rdf:resource="#Step"/>
+  </owl:TransitiveProperty>
+  <owl:TransitiveProperty rdf:about="#hasPrerequisite">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    ></owl:versionInfo>
+    <rdfs:subPropertyOf rdf:resource="#otherStep"/>
+    <rdfs:range rdf:resource="#Step"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >has prerequisite</rdfs:label>
+    <rdfs:domain rdf:resource="#Step"/>
+  </owl:TransitiveProperty>
+  <owl:TransitiveProperty rdf:about="#inSameRecipe">
+    <rdfs:range rdf:resource="#Step"/>
+    <rdfs:domain rdf:resource="#Step"/>
+  </owl:TransitiveProperty>
+  <owl:AnnotationProperty rdf:about="http://www.w3.org/2000/01/rdf-schema#label"/>
+  <owl:AnnotationProperty rdf:about="http://www.w3.org/2002/07/owl#versionInfo"/>
+  <Step rdf:ID="SliceBean">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    ></owl:versionInfo>
+    <enables>
+      <Step rdf:ID="HeatCream">
+        <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        ></owl:versionInfo>
+        <enables>
+          <Step rdf:ID="GraduallyMix">
+            <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            ></owl:versionInfo>
+            <enables>
+              <Step rdf:ID="CookCustard">
+                <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                ></owl:versionInfo>
+                <enables>
+                  <Step rdf:ID="Chill">
+                    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    ></owl:versionInfo>
+                    <enables>
+                      <Step rdf:ID="AddMilk">
+                        <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                        ></owl:versionInfo>
+                        <enables>
+                          <Step rdf:ID="TurnInFreezer">
+                            <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                            ></owl:versionInfo>
+                            <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                            >Turn in freezer</rdfs:label>
+                          </Step>
+                        </enables>
+                        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                        >Add milk</rdfs:label>
+                      </Step>
+                    </enables>
+                    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                    >Chill</rdfs:label>
+                  </Step>
+                </enables>
+                <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >Cook custard</rdfs:label>
+              </Step>
+            </enables>
+            <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >Gradually mix</rdfs:label>
+          </Step>
+        </enables>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >Heat cream</rdfs:label>
+      </Step>
+    </enables>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Slice bean</rdfs:label>
+  </Step>
+  <Step rdf:ID="SeparateEggs">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    ></owl:versionInfo>
+    <enables>
+      <Step rdf:ID="AddSugar">
+        <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        ></owl:versionInfo>
+        <enables>
+          <Step rdf:ID="BeatEggs">
+            <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            ></owl:versionInfo>
+            <enables rdf:resource="#GraduallyMix"/>
+            <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >Beat eggs</rdfs:label>
+          </Step>
+        </enables>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+        >Add sugar</rdfs:label>
+      </Step>
+    </enables>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Separate eggs</rdfs:label>
+  </Step>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->

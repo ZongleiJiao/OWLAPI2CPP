@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.workingontologist.org/Examples/Chapter6/TheFirm.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xml:base="http://www.workingontologist.org/Examples/Chapter6/TheFirm.owl">
+  <owl:Ontology rdf:about="">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created with TopBraid Composer</owl:versionInfo>
+  </owl:Ontology>
+  <owl:Class rdf:ID="Company">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="Person">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="isEmployedBy">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:range rdf:resource="#Company"/>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:ID="worksFor"/>
+    </rdfs:subPropertyOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="contractsTo">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:range rdf:resource="#Company"/>
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:about="#worksFor"/>
+    </rdfs:subPropertyOf>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="indirectlyContractsTo">
+    <rdfs:subPropertyOf rdf:resource="#contractsTo"/>
+    <rdfs:range rdf:resource="#Company"/>
+    <rdfs:domain rdf:resource="#Person"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#worksFor">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:range rdf:resource="#Company"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="freeLancesTo">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:range rdf:resource="#Company"/>
+    <rdfs:subPropertyOf rdf:resource="#contractsTo"/>
+  </owl:ObjectProperty>
+  <Person rdf:ID="Long">
+    <indirectlyContractsTo>
+      <Company rdf:ID="TheFirm"/>
+    </indirectlyContractsTo>
+  </Person>
+  <Person rdf:ID="Goldman">
+    <isEmployedBy rdf:resource="#TheFirm"/>
+  </Person>
+  <Person rdf:ID="Spence">
+    <freeLancesTo rdf:resource="#TheFirm"/>
+  </Person>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->

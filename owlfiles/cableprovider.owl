@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:q="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:d="http://www.workingontologist.org/Examples/Chapter10/cableprovider.owl#"
+  xml:base="http://www.workingontologist.org/Examples/Chapter10/cableprovider.owl">
+  <owl:Ontology rdf:about="">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created with TopBraid Composer</owl:versionInfo>
+    <owl:imports rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl"/>
+  </owl:Ontology>
+  <q:Question rdf:ID="NeighborsToo">
+    <q:questionText>Are other customers in your building also experiencing problems?</q:questionText>
+    <q:hasPrerequisite>
+      <q:Answer rdf:ID="PTech">
+        <q:answerText>Technical difficulty</q:answerText>
+      </q:Answer>
+    </q:hasPrerequisite>
+    <q:hasPrerequisite>
+      <q:Answer rdf:ID="OYes">
+        <q:answerText>Yes.</q:answerText>
+      </q:Answer>
+    </q:hasPrerequisite>
+    <q:hasOption>
+      <q:Answer rdf:ID="NTN">
+        <q:answerText> No, my neighbors are not experiencing the same problem.</q:answerText>
+      </q:Answer>
+    </q:hasOption>
+    <q:hasOption>
+      <q:Answer rdf:ID="NTDK">
+        <q:answerText>I don't know.</q:answerText>
+      </q:Answer>
+    </q:hasOption>
+    <q:hasOption>
+      <q:Answer rdf:ID="NTY">
+        <q:answerText>Yes, my neighbors are experiencing the same problem.</q:answerText>
+      </q:Answer>
+    </q:hasOption>
+  </q:Question>
+  <q:Question rdf:ID="whatIssue">
+    <q:questionText>What can customer service help you with today?</q:questionText>
+    <q:hasOption>
+      <q:Answer rdf:ID="PBilling">
+        <q:answerText>Billing question.</q:answerText>
+      </q:Answer>
+    </q:hasOption>
+    <q:hasOption rdf:resource="#PTech"/>
+    <q:hasOption>
+      <q:Answer rdf:ID="PCancel">
+        <q:answerText>Cancel account</q:answerText>
+      </q:Answer>
+    </q:hasOption>
+    <q:hasOption>
+      <q:Answer rdf:ID="PNew">
+        <q:answerText>New account</q:answerText>
+      </q:Answer>
+    </q:hasOption>
+  </q:Question>
+  <q:Question rdf:ID="othersinbuilding">
+    <q:questionText>Do you live in a multi-unit dwelling with other customers?</q:questionText>
+    <q:hasOption rdf:resource="#OYes"/>
+    <q:hasOption>
+      <q:Answer rdf:ID="ONo">
+        <q:answerText> No.</q:answerText>
+      </q:Answer>
+    </q:hasOption>
+  </q:Question>
+  <rdf:Description rdf:ID="WhatProblem">
+    <q:questionText>What system are you having trouble with?</q:questionText>
+    <q:hasSelectedOption>
+      <q:Answer rdf:ID="STV">
+        <q:enablesCandidate>
+          <rdf:Description rdf:ID="TVsymptom">
+            <q:questionText>What television symptoms are you having?</q:questionText>
+            <q:hasPrerequisite rdf:resource="#STV"/>
+            <q:hasOption>
+              <q:Answer rdf:ID="TVSreception">
+                <q:answerText>Bad reception</q:answerText>
+              </q:Answer>
+            </q:hasOption>
+            <q:hasOption>
+              <q:Answer rdf:ID="TVStiling">
+                <q:answerText>Tiling</q:answerText>
+              </q:Answer>
+            </q:hasOption>
+            <q:hasOption>
+              <q:SelectedAnswer rdf:ID="TVSnosound">
+                <q:answerText>No Sound</q:answerText>
+                <owl:differentFrom>
+                  <q:SelectedAnswer rdf:ID="TVSnothing">
+                    <q:answerText>No Picture</q:answerText>
+                  </q:SelectedAnswer>
+                </owl:differentFrom>
+              </q:SelectedAnswer>
+            </q:hasOption>
+            <q:hasOption rdf:resource="#TVSnothing"/>
+            <rdf:type>
+              <owl:Restriction>
+                <owl:onProperty>
+                  <rdf:Description rdf:about="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#hasPrerequisite">
+                    <rdfs:range rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#Answer"/>
+                    <rdfs:domain rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#Question"/>
+                  </rdf:Description>
+                </owl:onProperty>
+                <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+                >1</owl:cardinality>
+              </owl:Restriction>
+            </rdf:type>
+            <rdf:type rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#Question"/>
+            <rdf:type rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#HighPriorityItem"/>
+          </rdf:Description>
+        </q:enablesCandidate>
+        <q:answerText>Cable TV</q:answerText>
+        <rdf:type rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#SelectedAnswer"/>
+      </q:Answer>
+    </q:hasSelectedOption>
+    <q:hasPriority rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#High"/>
+    <q:hasOption rdf:resource="#STV"/>
+    <q:hasOption>
+      <q:Answer rdf:ID="SInternet">
+        <q:enablesCandidate>
+          <rdf:Description rdf:ID="InternetSymptom">
+            <q:hasPriority rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#Low"/>
+          </rdf:Description>
+        </q:enablesCandidate>
+        <q:answerText>High-speed Internet</q:answerText>
+      </q:Answer>
+    </q:hasOption>
+    <q:hasOption>
+      <q:Answer rdf:ID="SBoth">
+        <q:enablesCandidate rdf:resource="#TVsymptom"/>
+        <q:enablesCandidate rdf:resource="#InternetSymptom"/>
+        <q:answerText>Both</q:answerText>
+      </q:Answer>
+    </q:hasOption>
+    <rdf:type>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#hasPrerequisite"/>
+        <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+        >0</owl:cardinality>
+      </owl:Restriction>
+    </rdf:type>
+    <rdf:type rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#Question"/>
+  </rdf:Description>
+  <rdf:Description rdf:ID="TVTurnedOn">
+    <q:questionText rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Is your television turned on?</q:questionText>
+    <q:hasPrerequisite rdf:resource="#TVSnothing"/>
+    <q:hasPrerequisite rdf:resource="#TVSnosound"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >TVTurned on</rdfs:label>
+    <rdf:type>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#hasPrerequisite"/>
+        <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+        >2</owl:cardinality>
+      </owl:Restriction>
+    </rdf:type>
+    <rdf:type rdf:resource="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#Question"/>
+  </rdf:Description>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:dm="http://www.workingontologist.org/Examples/Chapter7/dm.owl#"
+    xmlns="http://www.workingontologist.org/Examples/Chapter7/stones.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:gm="http://www.workingontologist.org/Examples/Chapter7/gm.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xml:base="http://www.workingontologist.org/Examples/Chapter7/stones.owl">
+  <owl:Ontology rdf:about="">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created with TopBraid Composer</owl:versionInfo>
+  </owl:Ontology>
+  <owl:ObjectProperty rdf:about="http://www.workingontologist.org/Examples/Chapter7/dm.owl#partOf">
+    <rdfs:subPropertyOf>
+      <owl:TransitiveProperty rdf:about="http://www.workingontologist.org/Examples/Chapter7/gm.owl#partOf"/>
+    </rdfs:subPropertyOf>
+  </owl:ObjectProperty>
+  <owl:TransitiveProperty rdf:about="http://www.workingontologist.org/Examples/Chapter7/gm.owl#partOf">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </owl:TransitiveProperty>
+  <owl:Thing rdf:ID="MickJaggersThumb">
+    <dm:partOf>
+      <owl:Thing rdf:ID="MickJagger">
+        <dm:partOf>
+          <owl:Thing rdf:ID="TheRollingStones"/>
+        </dm:partOf>
+      </owl:Thing>
+    </dm:partOf>
+  </owl:Thing>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->

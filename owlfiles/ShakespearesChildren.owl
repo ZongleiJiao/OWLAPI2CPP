@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:contact="http://www.w3.org/2000/10/swap/pim/contact#"
+    xmlns:wordnet="http://xmlns.com/wordnet/1.6/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.workingontologist.org/Examples/Chapter10/ShakespearesChildren.owl#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xml:base="http://www.workingontologist.org/Examples/Chapter10/ShakespearesChildren.owl">
+  <owl:Ontology rdf:about="">
+    <owl:imports rdf:resource="http://xmlns.com/foaf/spec/index.rdf"/>
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created with TopBraid Composer</owl:versionInfo>
+  </owl:Ontology>
+  <owl:Class rdf:ID="ChildOfShakespeare">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:hasValue>
+          <foaf:Person rdf:ID="Shakespeare"/>
+        </owl:hasValue>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="hasParent"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:hasValue>
+          <foaf:Group rdf:ID="Shakespeares_Children">
+            <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >Shakespeares_Children</rdfs:label>
+            <foaf:member>
+              <foaf:Person rdf:ID="Susanna">
+                <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >Susanna</rdfs:label>
+              </foaf:Person>
+            </foaf:member>
+            <foaf:member>
+              <foaf:Person rdf:ID="Judith">
+                <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >Judith</rdfs:label>
+              </foaf:Person>
+            </foaf:member>
+            <foaf:member>
+              <foaf:Person rdf:ID="Hamnet">
+                <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+                >Hamnet</rdfs:label>
+              </foaf:Person>
+            </foaf:member>
+            <foaf:membershipClass rdf:resource="#ChildOfShakespeare"/>
+          </foaf:Group>
+        </owl:hasValue>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="memberOf"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </owl:equivalentClass>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Child of shakespeare</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="hasChild">
+    <owl:inverseOf rdf:resource="#hasParent"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="http://xmlns.com/foaf/0.1/membershipClass"/>
+  <owl:ObjectProperty rdf:about="#memberOf">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >member of</rdfs:label>
+  </owl:ObjectProperty>
+  <rdf:Description rdf:about="http://xmlns.com/foaf/0.1/member">
+    <owl:inverseOf rdf:resource="#memberOf"/>
+  </rdf:Description>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->

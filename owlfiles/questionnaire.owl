@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:q="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xml:base="http://www.workingontologist.org/Examples/Chapter10/questionnaire.owl">
+  <owl:Ontology rdf:about="">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created with TopBraid Composer</owl:versionInfo>
+  </owl:Ontology>
+  <owl:Class rdf:ID="SelectedAnswer">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="enablesCandidate">
+            <rdfs:range>
+              <owl:Class rdf:ID="Question"/>
+            </rdfs:range>
+            <rdfs:domain>
+              <owl:Class rdf:ID="Answer"/>
+            </rdfs:domain>
+          </owl:ObjectProperty>
+        </owl:onProperty>
+        <owl:allValuesFrom>
+          <owl:Class rdf:ID="EnabledQuestion"/>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="#Answer"/>
+  </owl:Class>
+  <owl:Class rdf:ID="CandidateQuestion">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:ID="HighPriorityItem"/>
+          <owl:Class rdf:about="#EnabledQuestion"/>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:ID="PriorityItem">
+    <rdfs:subClassOf rdf:resource="#Question"/>
+  </owl:Class>
+  <owl:Class rdf:ID="AnsweredQuestion">
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:someValuesFrom rdf:resource="#Answer"/>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="hasSelectedOption"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </owl:equivalentClass>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:about="#HighPriorityItem">
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="hasPriority"/>
+        </owl:onProperty>
+        <owl:hasValue>
+          <q:PriorityLevel rdf:ID="High"/>
+        </owl:hasValue>
+      </owl:Restriction>
+    </owl:equivalentClass>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="PriorityLevel"/>
+  <owl:Class rdf:ID="MediumPriorityItem">
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#hasPriority"/>
+        </owl:onProperty>
+        <owl:hasValue>
+          <q:PriorityLevel rdf:ID="Medium"/>
+        </owl:hasValue>
+      </owl:Restriction>
+    </owl:equivalentClass>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:ID="LowPriorityItem">
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#hasPriority"/>
+        </owl:onProperty>
+        <owl:hasValue>
+          <q:PriorityLevel rdf:ID="Low"/>
+        </owl:hasValue>
+      </owl:Restriction>
+    </owl:equivalentClass>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="#hasSelectedOption">
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:ID="hasOption"/>
+    </rdfs:subPropertyOf>
+    <rdfs:range rdf:resource="#SelectedAnswer"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="optionOf">
+    <owl:inverseOf rdf:resource="#hasOption"/>
+    <rdfs:range rdf:resource="#Question"/>
+    <rdfs:domain rdf:resource="#Answer"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#hasPriority">
+    <rdfs:domain rdf:resource="#PriorityItem"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="hasPrerequisite"/>
+  <owl:DatatypeProperty rdf:ID="answerText">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Answer"/>
+  </owl:DatatypeProperty>
+  <owl:FunctionalProperty rdf:ID="questionText">
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    <rdfs:domain rdf:resource="#Question"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </owl:FunctionalProperty>
+  <owl:Restriction>
+    <rdfs:subClassOf rdf:resource="#EnabledQuestion"/>
+    <owl:allValuesFrom rdf:resource="#SelectedAnswer"/>
+    <owl:onProperty rdf:resource="#hasPrerequisite"/>
+  </owl:Restriction>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->
