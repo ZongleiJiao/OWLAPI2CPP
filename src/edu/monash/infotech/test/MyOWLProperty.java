@@ -2,13 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.monash.infotech;
+package edu.monash.infotech.test;
 
 /**
  *
  * @author Zonglei Jiao
  */
-public class OWLProperty {
+public class MyOWLProperty {
     
     String propertyType;
     String propertyName;
