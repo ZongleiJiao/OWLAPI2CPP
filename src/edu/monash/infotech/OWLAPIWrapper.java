@@ -484,7 +484,7 @@ public class OWLAPIWrapper {
         
         System.out.println("=====================Load Ontology============================");
         OWLAPIWrapper owl = new OWLAPIWrapper();
-        String ontostr = owl.loadOntologyFile("owlfiles/koala.owl");
+        String ontostr = owl.loadOntologyFile("owlfiles/Product.owl");
         System.out.println("loading ontology: "+ontostr);
         System.out.println("Name Space : "+owl.nameSpace);
 
