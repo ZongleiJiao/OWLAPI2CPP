@@ -1,0 +1,2305 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY owl2xml "http://www.w3.org/2006/12/owl2-xml#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY case-ontology "http://www.wyner.info/research/case-ontology.owl#" >
+    <!ENTITY legal-case-ontology "http://www.best-project.nl/owl/legal-case-ontology.owl#" >
+]>
+
+
+<rdf:RDF xmlns="http://www.wyner.info/research/case-ontology.owl#"
+     xml:base="http://www.wyner.info/research/case-ontology.owl"
+     xmlns:owl2xml="http://www.w3.org/2006/12/owl2-xml#"
+     xmlns:case-ontology="http://www.wyner.info/research/case-ontology.owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:legal-case-ontology="http://www.best-project.nl/owl/legal-case-ontology.owl#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#">
+    <owl:Ontology rdf:about="">
+        <rdfs:comment
+            >Copyright (c) 2009 Adam Wyner and Rinke Hoekstra</rdfs:comment>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#benefits -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;benefits">
+        <rdfs:domain rdf:resource="&legal-case-ontology;Decided_Case"/>
+        <rdfs:range rdf:resource="&legal-case-ontology;Party"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="&legal-case-ontology;decision"/>
+            <rdf:Description rdf:about="&legal-case-ontology;favours"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#cited_by -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;cited_by">
+        <owl:inverseOf rdf:resource="&legal-case-ontology;cites"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;precedes"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#cites -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;cites">
+        <rdfs:comment rdf:datatype="&xsd;string"
+            >Replaced someValuesFrom restriction with domain and range: not all cases are cited</rdfs:comment>
+        <rdfs:domain rdf:resource="&legal-case-ontology;Case"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;succeeds"/>
+        <rdfs:range rdf:resource="#Legal_Document"/>
+        <rdfs:subPropertyOf rdf:resource="#element"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="&legal-case-ontology;decision"/>
+            <rdf:Description rdf:about="&legal-case-ontology;rationale"/>
+            <rdf:Description rdf:about="#legal_document"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#criticizes -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;criticizes">
+        <rdfs:range rdf:resource="&legal-case-ontology;Decided_Case"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;cites"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#decision -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;decision">
+        <rdfs:range rdf:resource="&legal-case-ontology;Decision"/>
+        <owl:inverseOf rdf:resource="#decision_of"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#defendant -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;defendant">
+        <rdfs:range rdf:resource="&legal-case-ontology;Defendant"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;party"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#defendant_solicitor -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;defendant_solicitor">
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;party_representation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#distinguishes -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;distinguishes">
+        <rdfs:range rdf:resource="&legal-case-ontology;Decided_Case"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;cites"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#expert_witness -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;expert_witness">
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;witness"/>
+        <rdfs:range rdf:resource="#Expert_Witness"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="&legal-case-ontology;decision"/>
+            <rdf:Description rdf:about="&legal-case-ontology;rationale"/>
+            <rdf:Description rdf:about="#expert_testimony"/>
+            <rdf:Description rdf:about="#given_by"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#factor -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;factor">
+        <rdfs:subPropertyOf rdf:resource="#argues"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#favours -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;favours"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#hearing -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;hearing">
+        <rdfs:domain rdf:resource="&legal-case-ontology;Case"/>
+        <rdfs:range rdf:resource="&legal-case-ontology;Hearing"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#issue -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;issue">
+        <rdfs:subPropertyOf rdf:resource="#argues"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#judge -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;judge">
+        <rdfs:range rdf:resource="&legal-case-ontology;Judge"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;participant"/>
+        <owl:propertyDisjointWith rdf:resource="&legal-case-ontology;party"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#judge_of -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;judge_of">
+        <owl:inverseOf rdf:resource="&legal-case-ontology;judge"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;participant_of"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#jurisdiction -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;jurisdiction">
+        <rdfs:range rdf:resource="&legal-case-ontology;Jurisdiction"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#legal_value -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;legal_value"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#overturns -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;overturns">
+        <rdfs:range rdf:resource="&legal-case-ontology;Decided_Case"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;cites"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#participant -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;participant">
+        <rdfs:domain rdf:resource="&legal-case-ontology;Case"/>
+        <rdfs:range rdf:resource="&legal-case-ontology;Participant"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#participant_of -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;participant_of">
+        <owl:inverseOf rdf:resource="&legal-case-ontology;participant"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#party -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;party">
+        <rdfs:range rdf:resource="&legal-case-ontology;Party"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;participant"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#party_of -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;party_of">
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;participant_of"/>
+        <owl:inverseOf rdf:resource="&legal-case-ontology;party"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#party_representant_of -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;party_representant_of">
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;participant_of"/>
+        <owl:inverseOf rdf:resource="&legal-case-ontology;party_representation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#party_representation -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;party_representation">
+        <rdfs:range rdf:resource="&legal-case-ontology;Solicitor"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;participant"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#plaintiff -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;plaintiff">
+        <rdfs:range rdf:resource="&legal-case-ontology;Plaintiff"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;party"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#plaintiff_solicitor -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;plaintiff_solicitor">
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;party_representation"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#precedes -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;precedes">
+        <rdf:type rdf:resource="&owl;TransitiveProperty"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#rationale -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;rationale">
+        <owl:inverseOf rdf:resource="#rationale_for"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#reporter -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;reporter">
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;participant"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#reporter_of -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;reporter_of">
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;participant_of"/>
+        <owl:inverseOf rdf:resource="&legal-case-ontology;reporter"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#solicitor -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;solicitor">
+        <rdfs:domain rdf:resource="&legal-case-ontology;Party"/>
+        <rdfs:range rdf:resource="&legal-case-ontology;Solicitor"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="&legal-case-ontology;defendant"/>
+            </owl:ObjectProperty>
+            <rdf:Description rdf:about="&legal-case-ontology;defendant_solicitor"/>
+        </owl:propertyChainAxiom>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="&legal-case-ontology;plaintiff"/>
+            </owl:ObjectProperty>
+            <rdf:Description rdf:about="&legal-case-ontology;plaintiff_solicitor"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;Axiom"/>
+        <rdfs:comment
+            >Allows us to infer the solicitor relation between a defendant and the defendant_solicitor of a case</rdfs:comment>
+        <owl:subject rdf:resource="&legal-case-ontology;solicitor"/>
+        <owl:predicate rdf:resource="&owl;propertyChainAxiom"/>
+        <owl:object rdf:parseType="Collection">
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="&legal-case-ontology;defendant"/>
+            </owl:ObjectProperty>
+            <rdf:Description rdf:about="&legal-case-ontology;defendant_solicitor"/>
+        </owl:object>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;Axiom"/>
+        <rdfs:comment
+            >allows us to infer the solicitor relation between a plaintiff and the plaintiff_solicitor of a case</rdfs:comment>
+        <owl:subject rdf:resource="&legal-case-ontology;solicitor"/>
+        <owl:predicate rdf:resource="&owl;propertyChainAxiom"/>
+        <owl:object rdf:parseType="Collection">
+            <owl:ObjectProperty>
+                <owl:inverseOf rdf:resource="&legal-case-ontology;plaintiff"/>
+            </owl:ObjectProperty>
+            <rdf:Description rdf:about="&legal-case-ontology;plaintiff_solicitor"/>
+        </owl:object>
+    </rdf:Description>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#subject -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;subject">
+        <rdfs:subPropertyOf rdf:resource="#argues"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#subordinates -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;subordinates"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#succeeds -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;succeeds">
+        <rdf:type rdf:resource="&owl;TransitiveProperty"/>
+        <owl:inverseOf rdf:resource="&legal-case-ontology;precedes"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#upholds -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;upholds">
+        <rdfs:range rdf:resource="&legal-case-ontology;Decided_Case"/>
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;cites"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#witness -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;witness">
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;participant"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="&legal-case-ontology;decision"/>
+            <rdf:Description rdf:about="&legal-case-ontology;rationale"/>
+            <rdf:Description rdf:about="#testimony"/>
+            <rdf:Description rdf:about="#given_by"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#witness_of -->
+
+    <owl:ObjectProperty rdf:about="&legal-case-ontology;witness_of">
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;participant_of"/>
+        <owl:inverseOf rdf:resource="&legal-case-ontology;witness"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#argues -->
+
+    <owl:ObjectProperty rdf:about="#argues">
+        <rdfs:subPropertyOf rdf:resource="#case_role"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#case_role -->
+
+    <owl:ObjectProperty rdf:about="#case_role"/>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#cause_of_action -->
+
+    <owl:ObjectProperty rdf:about="#cause_of_action">
+        <rdfs:subPropertyOf rdf:resource="#argues"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#circumstantial_evidence -->
+
+    <owl:ObjectProperty rdf:about="#circumstantial_evidence">
+        <rdfs:subPropertyOf rdf:resource="#evidence"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#decision_of -->
+
+    <owl:ObjectProperty rdf:about="#decision_of"/>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#disputed_element -->
+
+    <owl:ObjectProperty rdf:about="#disputed_element">
+        <rdfs:subPropertyOf rdf:resource="#element"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="&legal-case-ontology;decision"/>
+            <rdf:Description rdf:about="&legal-case-ontology;rationale"/>
+            <rdf:Description rdf:about="#disputed_evidence"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#disputed_evidence -->
+
+    <owl:ObjectProperty rdf:about="#disputed_evidence">
+        <rdfs:subPropertyOf rdf:resource="#evidence"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#document -->
+
+    <owl:ObjectProperty rdf:about="#document">
+        <rdfs:subPropertyOf rdf:resource="#evidence"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#element -->
+
+    <owl:ObjectProperty rdf:about="#element">
+        <rdfs:domain rdf:resource="&legal-case-ontology;Case"/>
+        <rdfs:range rdf:resource="#Element"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="&legal-case-ontology;decision"/>
+            <rdf:Description rdf:about="&legal-case-ontology;rationale"/>
+            <rdf:Description rdf:about="#case_role"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#evidence -->
+
+    <owl:ObjectProperty rdf:about="#evidence">
+        <rdfs:subPropertyOf rdf:resource="#case_role"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#expert_testimony -->
+
+    <owl:ObjectProperty rdf:about="#expert_testimony">
+        <rdfs:subPropertyOf rdf:resource="#testimony"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#eyewitness -->
+
+    <owl:ObjectProperty rdf:about="#eyewitness">
+        <rdfs:subPropertyOf rdf:resource="&legal-case-ontology;witness"/>
+        <rdfs:range rdf:resource="#Eyewitness"/>
+        <owl:propertyChainAxiom rdf:parseType="Collection">
+            <rdf:Description rdf:about="&legal-case-ontology;decision"/>
+            <rdf:Description rdf:about="&legal-case-ontology;rationale"/>
+            <rdf:Description rdf:about="#eyewitness_testimony"/>
+            <rdf:Description rdf:about="#given_by"/>
+        </owl:propertyChainAxiom>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#eyewitness_testimony -->
+
+    <owl:ObjectProperty rdf:about="#eyewitness_testimony">
+        <rdfs:subPropertyOf rdf:resource="#testimony"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#fact -->
+
+    <owl:ObjectProperty rdf:about="#fact">
+        <rdfs:subPropertyOf rdf:resource="#evidence"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#gave -->
+
+    <owl:ObjectProperty rdf:about="#gave"/>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#given_by -->
+
+    <owl:ObjectProperty rdf:about="#given_by">
+        <rdfs:comment xml:lang="en"
+            >Relates a declaration (usually a testimony) to the person (a witness) that made it</rdfs:comment>
+        <owl:inverseOf rdf:resource="#gave"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#hearing_of -->
+
+    <owl:ObjectProperty rdf:about="#hearing_of">
+        <owl:inverseOf rdf:resource="&legal-case-ontology;hearing"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#legal_document -->
+
+    <owl:ObjectProperty rdf:about="#legal_document">
+        <rdfs:subPropertyOf rdf:resource="#case_role"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#legislation -->
+
+    <owl:ObjectProperty rdf:about="#legislation">
+        <rdfs:subPropertyOf rdf:resource="#legal_document"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#physical_evidence -->
+
+    <owl:ObjectProperty rdf:about="#physical_evidence">
+        <rdfs:subPropertyOf rdf:resource="#evidence"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#precedent -->
+
+    <owl:ObjectProperty rdf:about="#precedent">
+        <rdfs:subPropertyOf rdf:resource="#legal_document"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#publication -->
+
+    <owl:ObjectProperty rdf:about="#publication">
+        <rdfs:subPropertyOf rdf:resource="#legal_document"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#rationale_for -->
+
+    <owl:ObjectProperty rdf:about="#rationale_for"/>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#refers_to -->
+
+    <owl:ObjectProperty rdf:about="#refers_to"/>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#subordinated_by -->
+
+    <owl:ObjectProperty rdf:about="#subordinated_by">
+        <owl:inverseOf rdf:resource="&legal-case-ontology;subordinates"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#testimony -->
+
+    <owl:ObjectProperty rdf:about="#testimony">
+        <rdfs:subPropertyOf rdf:resource="#evidence"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#value -->
+
+    <owl:ObjectProperty rdf:about="#value">
+        <rdfs:subPropertyOf rdf:resource="#argues"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#date -->
+
+    <owl:DatatypeProperty rdf:about="&legal-case-ontology;date">
+        <rdfs:range rdf:resource="&xsd;dateTime"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#name -->
+
+    <owl:DatatypeProperty rdf:about="&legal-case-ontology;name">
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#address -->
+
+    <owl:DatatypeProperty rdf:about="#address">
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#citation_index -->
+
+    <owl:DatatypeProperty rdf:about="#citation_index">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:comment
+            >Citation index functions as a key for any case: if two independently represented cases share the same citation index, they must be the same case.</rdfs:comment>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Argument_Scheme -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Argument_Scheme">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#case_role"/>
+                <owl:someValuesFrom rdf:resource="#Element"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#case_role"/>
+                <owl:allValuesFrom rdf:resource="#Element"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment
+            >RinkeHoekstra: it is currently unclear how much of the semantics of argument schemes can be expressed as OWL class restrictions. Subclasses of Argument_Scheme therefore only specify unique necessary and sufficient conditions for argument schemes. For instance, the presence of an an expert witness testimony indicates that the argument scheme used to provide the rationale for a case was at least of the type Expert_Testimony_Scheme</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Case -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Case">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&legal-case-ontology;defendant"/>
+                        <owl:someValuesFrom rdf:resource="&legal-case-ontology;Defendant"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&legal-case-ontology;judge"/>
+                        <owl:someValuesFrom rdf:resource="&legal-case-ontology;Judge"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&legal-case-ontology;plaintiff"/>
+                        <owl:someValuesFrom rdf:resource="&legal-case-ontology;Plaintiff"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&legal-case-ontology;Decided_Case"/>
+                    <rdf:Description rdf:about="&legal-case-ontology;Undecided_Case"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&owl;Thing"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;plaintiff"/>
+                <owl:onClass rdf:resource="&legal-case-ontology;Plaintiff"/>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;hearing"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Hearing"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;jurisdiction"/>
+                <owl:onClass rdf:resource="&legal-case-ontology;Jurisdiction"/>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;defendant_solicitor"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Solicitor"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;name"/>
+                <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;plaintiff_solicitor"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Solicitor"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;defendant"/>
+                <owl:onClass rdf:resource="&legal-case-ontology;Defendant"/>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Case_Reporter -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Case_Reporter">
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Reporter"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Court_Reporter -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Court_Reporter">
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Reporter"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Criticizing_Case -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Criticizing_Case">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;criticizes"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Shepardize_Case"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Decided_Case -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Decided_Case">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;decision"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Decision"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Case"/>
+        <owl:disjointWith rdf:resource="&legal-case-ontology;Undecided_Case"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Decision -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Decision">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;rationale"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;date"/>
+                <owl:qualifiedCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:qualifiedCardinality>
+                <owl:onDataRange rdf:resource="&xsd;dateTime"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;favours"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Party"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Decision_for_Defendant -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Decision_for_Defendant">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;favours"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Defendant"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Decision"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Decision_for_Plaintiff -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Decision_for_Plaintiff">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;favours"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Plaintiff"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Decision"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Decision_for_Split -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Decision_for_Split">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&legal-case-ontology;favours"/>
+                        <owl:someValuesFrom rdf:resource="&legal-case-ontology;Defendant"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&legal-case-ontology;favours"/>
+                        <owl:someValuesFrom rdf:resource="&legal-case-ontology;Plaintiff"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Decision"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Defendant -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Defendant">
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Party"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Distinguishing_Case -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Distinguishing_Case">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;distinguishes"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Shepardize_Case"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Fact -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Fact">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#fact"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Evidence"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Hearing -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Hearing">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;date"/>
+                <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Judge -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Judge">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;judge_of"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Participant"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Jurisdiction -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Jurisdiction">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                <owl:allValuesFrom rdf:resource="&legal-case-ontology;Jurisdiction"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment
+            >The jurisdiction of a case is the court that adminsters the case. The subsumption hierarchy gives a partial overview of UK and US courts.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Overturning_Case -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Overturning_Case">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;overturns"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Shepardize_Case"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Participant -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Participant">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;participant_of"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Party -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Party">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&legal-case-ontology;Defendant"/>
+                    <rdf:Description rdf:about="&legal-case-ontology;Plaintiff"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;party_of"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Participant"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Plaintiff -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Plaintiff">
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Party"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Precedent_Case -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Precedent_Case">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#precedent"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&legal-case-ontology;Case"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&legal-case-ontology;cited_by"/>
+                        <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Decided_Case"/>
+        <rdfs:subClassOf rdf:resource="#Legal_Document"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Reporter -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Reporter">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;reporter_of"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Participant"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Shepardize_Case -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Shepardize_Case">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&legal-case-ontology;Criticizing_Case"/>
+                    <rdf:Description rdf:about="&legal-case-ontology;Distinguishing_Case"/>
+                    <rdf:Description rdf:about="&legal-case-ontology;Overturning_Case"/>
+                    <rdf:Description rdf:about="&legal-case-ontology;Upholding_Case"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Decided_Case"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Solicitor -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Solicitor">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;party_representant_of"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Participant"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#UK_Court -->
+
+    <owl:Class rdf:about="&legal-case-ontology;UK_Court">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="#Court_of_Appeal"/>
+                    <rdf:Description rdf:about="#High_Court"/>
+                    <rdf:Description rdf:about="#House_of_Lords"/>
+                    <rdf:Description rdf:about="#Tribunal"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Jurisdiction"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#US_Court -->
+
+    <owl:Class rdf:about="&legal-case-ontology;US_Court">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="#Appelate_Court"/>
+                    <rdf:Description rdf:about="#Supreme_Court"/>
+                    <rdf:Description rdf:about="#Trial_Court"/>
+                </owl:unionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Jurisdiction"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Undecided_Case -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Undecided_Case">
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Case"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Upholding_Case -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Upholding_Case">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;upholds"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Shepardize_Case"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#Witness -->
+
+    <owl:Class rdf:about="&legal-case-ontology;Witness">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;witness_of"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Participant"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
+
+    <owl:Class rdf:about="&owl;Thing"/>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Appelate_Court -->
+
+    <owl:Class rdf:about="#Appelate_Court">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                        <owl:someValuesFrom rdf:resource="#Trial_Court"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#subordinated_by"/>
+                        <owl:someValuesFrom rdf:resource="#Supreme_Court"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;US_Court"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#subordinated_by"/>
+                <owl:allValuesFrom rdf:resource="#Supreme_Court"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                <owl:allValuesFrom rdf:resource="#Trial_Court"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Cause_of_Action -->
+
+    <owl:Class rdf:about="#Cause_of_Action">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#cause_of_action"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Legal_Concept"/>
+        <rdfs:comment
+            >A cause of action is the plaintiff&#39;s claim which expresses the legal theory and which justifies bringing the case to court.
+
+There are issues we are not quite addressing here that may be addressed in subsequent work.  In the literature, there is discussion about legal theories, but this is not part of this discussion.
+
+DEFINITION OF CAUSE OF ACTION AND EXAMPLES</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Circumstantial_Evidence -->
+
+    <owl:Class rdf:about="#Circumstantial_Evidence">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#circumstantial_evidence"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Evidence"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Court_of_Appeal -->
+
+    <owl:Class rdf:about="#Court_of_Appeal">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                        <owl:someValuesFrom rdf:resource="#High_Court"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#subordinated_by"/>
+                        <owl:someValuesFrom rdf:resource="#House_of_Lords"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;UK_Court"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                <owl:allValuesFrom>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="#High_Court"/>
+                            <rdf:Description rdf:about="#Tribunal"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:allValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Defeasible_Modus_Ponens_Scheme -->
+
+    <owl:Class rdf:about="#Defeasible_Modus_Ponens_Scheme">
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Disputed_Evidence -->
+
+    <owl:Class rdf:about="#Disputed_Evidence">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#disputed_evidence"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Evidence"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Document -->
+
+    <owl:Class rdf:about="#Document">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#document"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Evidence"/>
+        <rdfs:comment
+            >The idea of documentation here is different from legal document.  This evidence ought to be documents that support the argument in the case such as telephone records, letters, contracts....</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Element -->
+
+    <owl:Class rdf:about="#Element">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#case_role"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#case_role"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:allValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment
+            >Elements of a case are those things that play an (important) role in the case, and as such &#39;define&#39; the case. Note that each of the subsumed classes are in fact (epistemic) roles, i.e. they are roles being played by possibly widely varying ontological categories.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Evidence -->
+
+    <owl:Class rdf:about="#Evidence">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#evidence"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Element"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Expert_Testimony -->
+
+    <owl:Class rdf:about="#Expert_Testimony">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#given_by"/>
+                <owl:someValuesFrom rdf:resource="#Expert_Witness"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#expert_testimony"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Testimony"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Expert_Testimony_Scheme -->
+
+    <owl:Class rdf:about="#Expert_Testimony_Scheme">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#rationale_for"/>
+                <owl:someValuesFrom>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#decision_of"/>
+                        <owl:someValuesFrom>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&legal-case-ontology;expert_witness"/>
+                                <owl:someValuesFrom rdf:resource="#Expert_Witness"/>
+                            </owl:Restriction>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:someValuesFrom>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#evidence"/>
+                <owl:someValuesFrom>
+                    <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="#Testimony"/>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="#given_by"/>
+                                <owl:someValuesFrom rdf:resource="#Expert_Witness"/>
+                            </owl:Restriction>
+                        </owl:intersectionOf>
+                    </owl:Class>
+                </owl:someValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Expert_Witness -->
+
+    <owl:Class rdf:about="#Expert_Witness">
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Witness"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Eyewitness -->
+
+    <owl:Class rdf:about="#Eyewitness">
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Witness"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Eyewitness_Testimony_Scheme -->
+
+    <owl:Class rdf:about="#Eyewitness_Testimony_Scheme">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#rationale_for"/>
+                <owl:someValuesFrom>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#decision_of"/>
+                        <owl:someValuesFrom>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="#eyewitness"/>
+                                <owl:someValuesFrom rdf:resource="#Eyewitness"/>
+                            </owl:Restriction>
+                        </owl:someValuesFrom>
+                    </owl:Restriction>
+                </owl:someValuesFrom>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#evidence"/>
+                <owl:someValuesFrom>
+                    <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="#Testimony"/>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="#given_by"/>
+                                <owl:someValuesFrom rdf:resource="#Eyewitness"/>
+                            </owl:Restriction>
+                        </owl:intersectionOf>
+                    </owl:Class>
+                </owl:someValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Eyewitnesss_Testimony -->
+
+    <owl:Class rdf:about="#Eyewitnesss_Testimony">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#given_by"/>
+                <owl:someValuesFrom rdf:resource="#Eyewitness"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#eyewitness_testimony"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Testimony"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Factor -->
+
+    <owl:Class rdf:about="#Factor">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="&legal-case-ontology;factor"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Legal_Concept"/>
+        <rdfs:comment
+            >In many bodies of cases, factor based reasoning is key.
+
+There is something of an issue about the relationship of Facts and Factors since factors are typical fact patterns that are used to argue for one side or the other.  However, in a case decision, there are a range of facts that are reported that are not crucial to the determination of the case and are not reasoned with as Factors.  This, it seems to me, also occurs in the Intellectual Property and Wild Animals cases.
+
+Unfortunately, the notion of &#39;factor&#39; does not appear explicitly in Popov v. Hayashi.  Nor, for that matter, does factor based reasoning appear in our paper on Popov v. Hayashi.  This contrasts with the intellectual property and wild animals cases, where factor based reasoning is explicitly used.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#High_Court -->
+
+    <owl:Class rdf:about="#High_Court">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                        <owl:someValuesFrom rdf:resource="#Tribunal"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#subordinated_by"/>
+                        <owl:someValuesFrom rdf:resource="#Court_of_Appeal"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;UK_Court"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                <owl:allValuesFrom rdf:resource="#Tribunal"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#House_of_Lords -->
+
+    <owl:Class rdf:about="#House_of_Lords">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                <owl:someValuesFrom rdf:resource="#Court_of_Appeal"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:oneOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="#house_of_lords"/>
+                </owl:oneOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;UK_Court"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                <owl:allValuesFrom>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="#Court_of_Appeal"/>
+                            <rdf:Description rdf:about="#High_Court"/>
+                            <rdf:Description rdf:about="#Tribunal"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:allValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:complementOf>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#subordinated_by"/>
+                        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+                    </owl:Restriction>
+                </owl:complementOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Issue -->
+
+    <owl:Class rdf:about="#Issue">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="&legal-case-ontology;issue"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Legal_Concept"/>
+        <rdfs:comment
+            >An issue is what must be decided in a case and for the benefit of which side.  In Popov v. Hayashi, the legal issue was pre-possessory interest in property, given that Popov had attempted, but failed, to catch the ball.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Legal_Concept -->
+
+    <owl:Class rdf:about="#Legal_Concept">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#argues"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Element"/>
+        <rdfs:comment
+            >Legal concepts are those things that describe and qualify a case from a legal perspective. Examples are the claim made by the plaintiff, important factors identified in precedent cases, values such as bright line of law, fairness, etc.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Legal_Document -->
+
+    <owl:Class rdf:about="#Legal_Document">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#document"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Element"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;cited_by"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Case"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:comment
+            >A legal document as cited in a case. Note that this class does not comprise all legal documents, nor does it define legal documents independent of cases and argument schemes. In this perspective, some individual can only be a legal document if it is cited by a case (though that is not a sufficient condition)</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Legal_Publication -->
+
+    <owl:Class rdf:about="#Legal_Publication">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#publication"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Legal_Document"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Legislation -->
+
+    <owl:Class rdf:about="#Legislation">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#legislation"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Legal_Document"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Physical_Evidence -->
+
+    <owl:Class rdf:about="#Physical_Evidence">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#physical_evidence"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Evidence"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Purpose_Scheme -->
+
+    <owl:Class rdf:about="#Purpose_Scheme">
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Subject -->
+
+    <owl:Class rdf:about="#Subject">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="&legal-case-ontology;subject"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Legal_Concept"/>
+        <rdfs:comment
+            >Subject is a broad classification of legal topics such as employment, discrimination, intellectual property.  Cases can be classified with respect to what subject they fall under.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Supreme_Court -->
+
+    <owl:Class rdf:about="#Supreme_Court">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:oneOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="#supreme_court"/>
+                </owl:oneOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                <owl:someValuesFrom rdf:resource="#Appelate_Court"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;US_Court"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                <owl:allValuesFrom>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="#Appelate_Court"/>
+                            <rdf:Description rdf:about="#Trial_Court"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:allValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:complementOf>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="#subordinated_by"/>
+                        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+                    </owl:Restriction>
+                </owl:complementOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Testimony -->
+
+    <owl:Class rdf:about="#Testimony">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#given_by"/>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Witness"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#testimony"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Evidence"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Trial_Court -->
+
+    <owl:Class rdf:about="#Trial_Court">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#subordinated_by"/>
+                <owl:someValuesFrom rdf:resource="#Appelate_Court"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;US_Court"/>
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:complementOf>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+                    </owl:Restriction>
+                </owl:complementOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#subordinated_by"/>
+                <owl:allValuesFrom rdf:resource="#Appelate_Court"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Tribunal -->
+
+    <owl:Class rdf:about="#Tribunal">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="#subordinated_by"/>
+                <owl:someValuesFrom rdf:resource="#High_Court"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;UK_Court"/>
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:complementOf>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&legal-case-ontology;subordinates"/>
+                        <owl:someValuesFrom rdf:resource="&owl;Thing"/>
+                    </owl:Restriction>
+                </owl:complementOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Value -->
+
+    <owl:Class rdf:about="#Value">
+        <owl:equivalentClass>
+            <owl:Restriction>
+                <owl:onProperty>
+                    <owl:ObjectProperty>
+                        <owl:inverseOf rdf:resource="#value"/>
+                    </owl:ObjectProperty>
+                </owl:onProperty>
+                <owl:someValuesFrom rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+            </owl:Restriction>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="#Legal_Concept"/>
+        <rdfs:comment
+            >Values here are related to the work of Bench-Capon and subsequent work in which values are introduced to distinguish between two equally possible choices in a decision.  Some values are bright line of the law, fairness in law, maintaining public order...</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#Video_Tape_Scheme -->
+
+    <owl:Class rdf:about="#Video_Tape_Scheme">
+        <rdfs:subClassOf rdf:resource="&legal-case-ontology;Argument_Scheme"/>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#alex_popov -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;alex_popov"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#bright_line_of_law -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;bright_line_of_law"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#circumstantial_data -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;circumstantial_data"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#constructive_trust -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;constructive_trust">
+        <rdfs:comment
+            >From law.dictionary.com
+
+when a person has title to property and/or takes possession of it under circumstances in which he/she is holding it for another, even though there is no formal trust document or agreement. The court may determine that the holder of the title holds it as constructive trustee for the benefit of the intended owner. This may occur through fraud, breach of faith, ignorance or inadvertence.</rdfs:comment>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#discrimination_law -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;discrimination_law"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#fairness_in_law -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;fairness_in_law"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#home_run_barry_bonds -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;home_run_barry_bonds">
+        <rdfs:comment
+            >Barry Bonds hit a record home run</rdfs:comment>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#home_run_catch_possibility -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;home_run_catch_possibility">
+        <rdfs:comment
+            >Alex Popov and Patrick Hayashi were positioned to catch the home run baseball</rdfs:comment>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#injunctive_relief -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;injunctive_relief">
+        <rdfs:comment
+            >From law.dictionary.com
+
+injunctive relief
+n. a court-ordered act or prohibition against an act or condition which has been requested, and sometimes granted, in a petition to the court for an injunction. Such an act is the use of judicial (court) authority to handle a problem and is not a judgment for money. Whether the relief will be granted is usually argued by both sides in a hearing rather than in a full-scale trial, although sometimes it is part of a lawsuit for damages and/or contract performance. Historically, the power to grant injunctive relief stems from English equity courts rather than damages from law courts.</rdfs:comment>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#jane_doe -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;jane_doe"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#john_doe -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;john_doe"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#kevin_mccarthy -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;kevin_mccarthy"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#legal_conversion -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;legal_conversion">
+        <rdfs:comment
+            >From law.dictionary.com
+
+conversion
+n. a civil wrong (tort) in which one converts another&#39;s property to his/her own use, which is a fancy way of saying &quot;steals.&quot; Conversion includes treating another&#39;s goods as one&#39;s own, holding onto such property which accidentally comes into the convertor&#39;s (taker&#39;s) hands, or purposely giving the impression the assets belong to him/her. This gives the true owner the right to sue for his/her own property or the value and loss of use of it, as well as going to law enforcement authorities since conversion usually includes the crime of theft.</rdfs:comment>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#patrick_hayashi -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;patrick_hayashi"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#pierson_v_post -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;pierson_v_post">
+        <rdf:type rdf:resource="&legal-case-ontology;Case"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#popov_v_hayashi -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;popov_v_hayashi">
+        <citation_index rdf:datatype="&xsd;string"
+            >Popov v. Hayashi, 2002 WL 31833731</citation_index>
+        <legal-case-ontology:name rdf:datatype="&xsd;string"
+            >Popov versus Hayashi</legal-case-ontology:name>
+        <legal-case-ontology:plaintiff rdf:resource="&legal-case-ontology;alex_popov"/>
+        <legal-case-ontology:defendant_solicitor rdf:resource="&legal-case-ontology;jane_doe"/>
+        <legal-case-ontology:plaintiff_solicitor rdf:resource="&legal-case-ontology;john_doe"/>
+        <legal-case-ontology:judge rdf:resource="&legal-case-ontology;kevin_mccarthy"/>
+        <legal-case-ontology:defendant rdf:resource="&legal-case-ontology;patrick_hayashi"/>
+        <legal-case-ontology:cites rdf:resource="&legal-case-ontology;pierson_v_post"/>
+        <legal-case-ontology:decision rdf:resource="&legal-case-ontology;popov_v_hayashi_decision"/>
+        <legal-case-ontology:cites rdf:resource="&legal-case-ontology;state_v_shaw"/>
+        <legal-case-ontology:cites rdf:resource="&legal-case-ontology;young_v_hitchens"/>
+        <legal-case-ontology:cites rdf:resource="&legal-case-ontology;zaslow_v_kroenert"/>
+        <legal-case-ontology:hearing rdf:resource="#popov_v_hayashi_hearing"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#popov_v_hayashi_decision -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;popov_v_hayashi_decision">
+        <legal-case-ontology:favours rdf:resource="&legal-case-ontology;alex_popov"/>
+        <legal-case-ontology:favours rdf:resource="&legal-case-ontology;patrick_hayashi"/>
+        <legal-case-ontology:rationale rdf:resource="#popov_v_hayashi_rationale"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#pre-possessory_interest_in_property -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;pre-possessory_interest_in_property"/>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#professor_bernhardt -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;professor_bernhardt">
+        <gave rdf:resource="#professor_bernhardt_testimony"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#state_v_shaw -->
+
+    <legal-case-ontology:Case rdf:about="&legal-case-ontology;state_v_shaw">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </legal-case-ontology:Case>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#stopped_forward_motion -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;stopped_forward_motion">
+        <rdfs:comment
+            >Popov stopped the forward motion of the baseball</rdfs:comment>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#superior_court_of_california -->
+
+    <Appelate_Court rdf:about="&legal-case-ontology;superior_court_of_california">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </Appelate_Court>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#trespass_to_chattel -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;trespass_to_chattel">
+        <rdfs:comment
+            >Wikipedia
+
+Trespass to chattels is a tort whereby the infringing party has intentionally (or in Australia negligently) interfered with another person&#39;s lawful possession of a chattel. The interference can be any physical contact with the chattel in a quantifiable way, or any dispossession of the chattel (whether by taking it, destroying it, or barring the owner&#39;s access to it).</rdfs:comment>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#young_v_hitchens -->
+
+    <legal-case-ontology:Case rdf:about="&legal-case-ontology;young_v_hitchens">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </legal-case-ontology:Case>
+    
+
+
+    <!-- http://www.best-project.nl/owl/legal-case-ontology.owl#zaslow_v_kroenert -->
+
+    <owl:Thing rdf:about="&legal-case-ontology;zaslow_v_kroenert">
+        <rdf:type rdf:resource="&legal-case-ontology;Case"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#court_of_appeal_test -->
+
+    <owl:Thing rdf:about="#court_of_appeal_test">
+        <rdf:type rdf:resource="#Court_of_Appeal"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#employee_bribed -->
+
+    <owl:Thing rdf:about="#employee_bribed"/>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#employment_law -->
+
+    <owl:Thing rdf:about="#employment_law"/>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#house_of_lords -->
+
+    <House_of_Lords rdf:about="#house_of_lords">
+        <rdf:type rdf:resource="&owl;Thing"/>
+    </House_of_Lords>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#popov_and_hayashi_positioned_to_catch_baseball -->
+
+    <owl:Thing rdf:about="#popov_and_hayashi_positioned_to_catch_baseball"/>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#popov_v_hayashi_hearing -->
+
+    <owl:Thing rdf:about="#popov_v_hayashi_hearing">
+        <legal-case-ontology:date rdf:datatype="&xsd;dateTime"
+            >2000-12-12T10:00:00-12:00</legal-case-ontology:date>
+        <address rdf:datatype="&xsd;string"
+            >City and County of San Francisco, Department 306, California, USA</address>
+        <citation_index rdf:datatype="&xsd;string"
+            >Popov v. Hayashi, 2002 WL 31833731</citation_index>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#popov_v_hayashi_rationale -->
+
+    <owl:Thing rdf:about="#popov_v_hayashi_rationale">
+        <cause_of_action rdf:resource="&legal-case-ontology;constructive_trust"/>
+        <value rdf:resource="&legal-case-ontology;fairness_in_law"/>
+        <fact rdf:resource="&legal-case-ontology;home_run_barry_bonds"/>
+        <fact rdf:resource="&legal-case-ontology;home_run_catch_possibility"/>
+        <cause_of_action rdf:resource="&legal-case-ontology;injunctive_relief"/>
+        <cause_of_action rdf:resource="&legal-case-ontology;legal_conversion"/>
+        <fact rdf:resource="&legal-case-ontology;stopped_forward_motion"/>
+        <cause_of_action rdf:resource="&legal-case-ontology;trespass_to_chattel"/>
+        <fact rdf:resource="#popov_and_hayashi_positioned_to_catch_baseball"/>
+        <expert_testimony rdf:resource="#professor_bernhardt_testimony"/>
+        <eyewitness_testimony rdf:resource="#tom_doe_eyewitness_testimony"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#professor_bernhardt_testimony -->
+
+    <owl:Thing rdf:about="#professor_bernhardt_testimony"/>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#supreme_court -->
+
+    <owl:Thing rdf:about="#supreme_court">
+        <rdf:type rdf:resource="#Supreme_Court"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#tom_doe_eyewitness -->
+
+    <owl:Thing rdf:about="#tom_doe_eyewitness">
+        <gave rdf:resource="#tom_doe_eyewitness_testimony"/>
+    </owl:Thing>
+    
+
+
+    <!-- http://www.wyner.info/research/case-ontology.owl#tom_doe_eyewitness_testimony -->
+
+    <owl:Thing rdf:about="#tom_doe_eyewitness_testimony"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="#Court_of_Appeal"/>
+            <rdf:Description rdf:about="#High_Court"/>
+            <rdf:Description rdf:about="#House_of_Lords"/>
+            <rdf:Description rdf:about="#Tribunal"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="#Appelate_Court"/>
+            <rdf:Description rdf:about="#Supreme_Court"/>
+            <rdf:Description rdf:about="#Trial_Court"/>
+        </owl:members>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 2.2.1.1138) http://owlapi.sourceforge.net -->
+

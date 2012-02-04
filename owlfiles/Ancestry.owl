@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://www.workingontologist.org/Examples/Chapter7/Ancestry.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xml:base="http://www.workingontologist.org/Examples/Chapter7/Ancestry.owl">
+  <owl:Ontology rdf:about="">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created with TopBraid Composer</owl:versionInfo>
+  </owl:Ontology>
+  <owl:Class rdf:ID="Person">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="hasParent">
+    <rdfs:subPropertyOf>
+      <owl:ObjectProperty rdf:ID="hasAncestor"/>
+    </rdfs:subPropertyOf>
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:range rdf:resource="#Person"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#hasAncestor">
+    <rdfs:domain rdf:resource="#Person"/>
+    <rdfs:range rdf:resource="#Person"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+  </owl:ObjectProperty>
+  <Person rdf:ID="Alexia">
+    <hasParent>
+      <Person rdf:ID="WillemAlexander">
+        <hasParent>
+          <Person rdf:ID="Beatrix">
+            <hasParent>
+              <Person rdf:ID="Wilhelmina"/>
+            </hasParent>
+          </Person>
+        </hasParent>
+      </Person>
+    </hasParent>
+  </Person>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->

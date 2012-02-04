@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://www.workingontologist.org/Examples/Chapter10/baseball.owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xml:base="http://www.workingontologist.org/Examples/Chapter10/baseball.owl">
+  <owl:Ontology rdf:about="">
+    <owl:versionInfo rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Created with TopBraid Composer</owl:versionInfo>
+  </owl:Ontology>
+  <owl:Class rdf:ID="CarpPlayer">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Carp player</rdfs:label>
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="playsFor"/>
+        </owl:onProperty>
+        <owl:hasValue>
+          <CentralLeagueTeam rdf:ID="Carp">
+            <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+            >Carp</rdfs:label>
+          </CentralLeagueTeam>
+        </owl:hasValue>
+      </owl:Restriction>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:ID="JballTeam">
+    <rdfs:subClassOf>
+      <owl:Class rdf:ID="BaseballTeam"/>
+    </rdfs:subClassOf>
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:unionOf rdf:parseType="Collection">
+          <owl:Class rdf:ID="CentralLeagueTeam"/>
+          <owl:Class rdf:ID="PacificLeagueTeam"/>
+        </owl:unionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:ID="AllStarBaseballTeam">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:ID="AllStarTeam"/>
+          <owl:Class rdf:about="#BaseballTeam"/>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:ID="Team">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+        >1</owl:minCardinality>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:ID="hires"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+  </owl:Class>
+  <owl:Class rdf:about="#AllStarTeam">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom>
+          <owl:Class rdf:ID="AllStarPlayer"/>
+        </owl:someValuesFrom>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#hires"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:about="#AllStarPlayer">
+    <owl:equivalentClass>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Restriction>
+            <owl:someValuesFrom rdf:resource="#AllStarTeam"/>
+            <owl:onProperty>
+              <owl:ObjectProperty rdf:about="#playsFor"/>
+            </owl:onProperty>
+          </owl:Restriction>
+          <owl:Class rdf:ID="Player"/>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:ID="AllStarBaseballPlayer">
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#playsFor"/>
+        </owl:onProperty>
+        <owl:someValuesFrom rdf:resource="#AllStarBaseballTeam"/>
+      </owl:Restriction>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:ID="BaseballPlayer">
+    <owl:equivalentClass>
+      <owl:Restriction>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#playsFor"/>
+        </owl:onProperty>
+        <owl:someValuesFrom>
+          <owl:Class rdf:about="#BaseballTeam"/>
+        </owl:someValuesFrom>
+      </owl:Restriction>
+    </owl:equivalentClass>
+  </owl:Class>
+  <owl:Class rdf:about="#BaseballTeam">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:someValuesFrom rdf:resource="#BaseballPlayer"/>
+        <owl:onProperty>
+          <owl:ObjectProperty rdf:about="#hires"/>
+        </owl:onProperty>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:ObjectProperty rdf:about="#playsFor">
+    <rdfs:domain rdf:resource="#Player"/>
+    <rdfs:range rdf:resource="#Team"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:about="#hires">
+    <owl:inverseOf rdf:resource="#playsFor"/>
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >hires</rdfs:label>
+  </owl:ObjectProperty>
+  <CentralLeagueTeam rdf:ID="Swallows">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Swallows</rdfs:label>
+  </CentralLeagueTeam>
+  <PacificLeagueTeam rdf:ID="Marines">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Marines</rdfs:label>
+  </PacificLeagueTeam>
+  <PacificLeagueTeam rdf:ID="Lions">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Lions</rdfs:label>
+  </PacificLeagueTeam>
+  <CentralLeagueTeam rdf:ID="Tigers">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Tigers</rdfs:label>
+  </CentralLeagueTeam>
+  <CentralLeagueTeam rdf:ID="Giants">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Giants</rdfs:label>
+  </CentralLeagueTeam>
+  <PacificLeagueTeam rdf:ID="BlueWave">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Blue Wave</rdfs:label>
+  </PacificLeagueTeam>
+  <CentralLeagueTeam rdf:ID="Dragons">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Dragons</rdfs:label>
+  </CentralLeagueTeam>
+  <CentralLeagueTeam rdf:ID="BayStars">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Bay Stars</rdfs:label>
+  </CentralLeagueTeam>
+  <PacificLeagueTeam rdf:ID="Fighters">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Fighters</rdfs:label>
+  </PacificLeagueTeam>
+  <PacificLeagueTeam rdf:ID="Buffaloes">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Buffaloes</rdfs:label>
+  </PacificLeagueTeam>
+  <PacificLeagueTeam rdf:ID="Hawks">
+    <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string"
+    >Hawks</rdfs:label>
+  </PacificLeagueTeam>
+</rdf:RDF>
+
+<!-- Created with TopBraid Composer -->
