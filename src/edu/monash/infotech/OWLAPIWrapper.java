@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.coode.xml.OWLOntologyXMLNamespaceManager;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.AxiomType;
 import org.semanticweb.owlapi.model.EntityType;
@@ -49,9 +50,10 @@ public class OWLAPIWrapper {
     public final String PROPERTY_TYPE_TRANSITIVE = "Transitive";
     public final String PROPERTY_TYPE_REFLEXIVE = "Reflexive";
     public final String PROPERTY_TYPE_IRREFLEXIVE = "Irreflexive";
+    
+    public String nameSpace;
         
     private OWLDataFactory myFactory;
-    private String nameSpace;
     private DefaultPrefixManager prefixManager;
     private OWLOntology myOntology;
     private OWLClass[] allOWLClasses;
@@ -68,14 +70,10 @@ public class OWLAPIWrapper {
     //if any item is not provied by ontology, one " " will be writen instead
     private String[] properties;
     
-    
-//    private OWLProperty[] objectProperties;
-//    private OWLProperty[] dataProperties;    
+     
 //    private String[] equivalentClasses;
 //    private String[] dataProperties;
 //    private String[] oObjectProperties;
-//    private String classPrefix;
-//    private int indexOfsharp;
     
 
     public OWLAPIWrapper() {
@@ -88,14 +86,40 @@ public class OWLAPIWrapper {
             OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
             myFactory = manager.getOWLDataFactory();
             myOntology = manager.loadOntologyFromOntologyDocument(file);
+            
+            OWLOntologyXMLNamespaceManager ooxnm = new OWLOntologyXMLNamespaceManager(manager,myOntology);
+            
+System.out.println("DefaultNameSpace: "+ooxnm.getDefaultNamespace());
+System.out.println("NameSpace: "+ooxnm.getNamespaces().toString());
+System.out.println("Prefix: "+ooxnm.getPrefixes().toString());
+
+
+System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
             //get all classes from ontology.
             Set<OWLClass> ocset = myOntology.getClassesInSignature();
             allOWLClasses = new OWLClass[ocset.size()];
             ocset.toArray(allOWLClasses);
+//System.out.println("Number of Owl classes"+ocset.size());            
+//for(OWLClass oc: allOWLClasses)
+//{
+//    System.out.println("toStringID------>"+oc.toStringID());
+//    System.out.println("toString------>"+oc.toString());
+//}
             
-            //get ontology base,initialize prefixmanager
-            nameSpace = allOWLClasses[1].toString().substring(1,allOWLClasses[1].toString().indexOf("#")+1);
+//            //get ontology base,initialize prefixmanager
+//            if(this.allOWLClasses[0].toString().equalsIgnoreCase("owl:Thing") && ocset.size()==1)
+//            {
+//                nameSpace = allOWLClasses[0].toStringID().substring(1,allOWLClasses[0].toStringID().indexOf("#")+1);
+//            }
+//            if(this.allOWLClasses[0].toString().equalsIgnoreCase("owl:Thing") && ocset.size()>1)
+//            {
+//                nameSpace = allOWLClasses[1].toStringID().substring(1,allOWLClasses[1].toStringID().indexOf("#")+1);
+//            }else if(!(this.allOWLClasses[0].toString().equalsIgnoreCase("owl:Thing")) && ocset.size()>1)
+//            {
+//                nameSpace = allOWLClasses[0].toStringID().substring(1,allOWLClasses[0].toStringID().indexOf("#")+1);
+//            }
+            nameSpace = ooxnm.getDefaultNamespace();
             prefixManager = new DefaultPrefixManager(nameSpace);
             
             //get Axioms of ontology
@@ -194,14 +218,9 @@ public class OWLAPIWrapper {
         
         OWLIndividual[] express = new OWLIndividual[set.size()];
         set.toArray(express);
-//        this.individualNames = new String[express.length];
-//        for (int i = 0; i < express.length; i++) {
-//            individualNames[i] = express[i].toString();
-//            System.out.println(individualNames[i]);
-//        }
-        
-        return getIndividualShortNames(express);
-//        return null;
+
+        this.individualNames = getIndividualShortNames(express);
+        return this.individualNames;
     }
     
     private String getPropertySubType(OWLProperty op)
@@ -343,7 +362,6 @@ public class OWLAPIWrapper {
                 int index_1 = alDeclarationAxiom[i].toString().indexOf(nameSpace);
                 int index_2 = alDeclarationAxiom[i].toString().indexOf(">");
                 String propertyName = alDeclarationAxiom[i].toString().substring(index_1+nameSpace.length(), index_2);
-//System.out.println(propertyName);
                 String[] info = this.getPropertyInformation(type, propertyName);
                 list.add(propertyName);
                 list.add(info[0]);
@@ -353,10 +371,6 @@ public class OWLAPIWrapper {
         }
         properties = new String[list.size()];
         list.toArray(properties);
-//        for(String s:properties)
-//        {
-//            System.out.println("------- "+s);
-//        }
         return properties;
     }
     
@@ -484,10 +498,15 @@ public class OWLAPIWrapper {
         
         System.out.println("=====================Load Ontology============================");
         OWLAPIWrapper owl = new OWLAPIWrapper();
-        String ontostr = owl.loadOntologyFile("owlfiles/Product.owl");
+        String ontostr = owl.loadOntologyFile("owlfiles/stones.owl");
         System.out.println("loading ontology: "+ontostr);
         System.out.println("Name Space : "+owl.nameSpace);
-
+        
+        for(OWLClass oc:owl.allOWLClasses)
+        {
+            System.out.println(oc.toString());
+        }
+        
         System.out.println("=====================All Classes(Names)============================");
         String[] aoc = owl.getAllOWLClasses();
         System.out.println("Number of classes---->" + aoc.length);
