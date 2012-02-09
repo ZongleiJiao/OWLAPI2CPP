@@ -144,6 +144,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     }
 
     //get all superclasses of the class provided
+    //TODO one child has multiple super classes
     public String[] getSuperClasses(String className) {
         OWLClass cls = myFactory.getOWLClass(prefixManager.getIRI(className));
 
@@ -175,14 +176,27 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
     //TODO -----
     public String[] getEquivalentClasses(String className) {
-//        OWLClass cls = myFactory.getOWLClass(pm.getIRI(className));
-//        Set<OWLClassExpression> oceset = cls.getEquivalentClasses(myOntology);System.out.println(cls.toString());
-//        if (oceset.size() < 1) {
-//            return null;
-//        }
-//        
-//        OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
-//        oceset.toArray(expression);
+        OWLClass cls = myFactory.getOWLClass(this.prefixManager.getIRI(className));
+        Set<OWLClassExpression> oceset = cls.getEquivalentClasses(myOntology);System.out.println(cls.toString());
+        if (oceset.size() < 1) {
+            return null;
+        }
+        
+        OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
+        oceset.toArray(expression);
+        System.out.println(oceset.size()+this.nameSpace);
+        String str = expression[0].toString();
+        System.out.println(str);
+        str = str.replaceAll(this.nameSpace, "");
+        System.out.println(str+"\n");
+        OWLEquivalentClassesAxiom oeca = this.myFactory.getOWLEquivalentClassesAxiom(expression);
+        System.out.println(oeca.toString());
+        Set<OWLClassExpression> oceset2 = oeca.getNestedClassExpressions();System.out.println(oceset2.size());
+        for(OWLClassExpression s:oceset2)
+        {
+            System.out.println(s.toString());
+        }
+        
 //        for(OWLClassExpression s:expression)
 //        {
 //            System.out.println(s.toString());
@@ -481,7 +495,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         
         System.out.println("=====================Load Ontology============================");
         OWLAPIWrapper owl = new OWLAPIWrapper();
-        String ontostr = owl.loadOntologyFile("owlfiles/stones.owl");
+        String ontostr = owl.loadOntologyFile("owlfiles/koala.owl");
         System.out.println("loading ontology: "+ontostr);
         System.out.println("Name Space : "+owl.nameSpace);
         
@@ -534,8 +548,8 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             }
         }
 
-//        System.out.println("=====================Equivalent classes============================");
-//        String[] ec = owl.getEquivalentClasses("MaleStudentWith3Daughters");
+        System.out.println("=====================Equivalent classes============================");
+        String[] ec = owl.getEquivalentClasses("Student");
 //        if (ec != null) {
 //            for (String name : ec) {
 //                System.out.println(name);
@@ -600,7 +614,8 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 //        OWLClass cls = owl.myFactory.getOWLClass(owl.pm.getIRI("Animal"));
 //        Set<OWLAxiom> set = cls.getReferencingAxioms(owl.myOntology);
 //        
-        Set<OWLDeclarationAxiom> set = owl.myOntology.getAxioms(AxiomType.DECLARATION);
+//        Set<OWLDeclarationAxiom> set = owl.myOntology.getAxioms(AxiomType.DECLARATION);
+        Set<OWLAxiom> set = owl.myOntology.getAxioms();
         OWLAxiom[] oa = new OWLAxiom[set.size()];
         set.toArray(oa);
         int i=0;
