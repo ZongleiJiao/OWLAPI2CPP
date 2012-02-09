@@ -34,19 +34,20 @@ public class OWLAPIWrapper {
     public final String PROPERTY_TYPE_REFLEXIVE = "Reflexive";
     public final String PROPERTY_TYPE_IRREFLEXIVE = "Irreflexive";
     
-    public String nameSpace;
-        
+    private String defaultNameSpace;        
     private OWLDataFactory myFactory;
     private DefaultPrefixManager prefixManager;
     private OWLOntology myOntology;
     private OWLClass[] allOWLClasses;
     private OWLAxiom[] alDeclarationAxiom;
 
+    //all short names
     private String[] allOWLClassNames;
     private String[] subClassNames;
     private String[] superClassNames;
     private String[] disjointClassNames;
     private String[] individualNames;
+    private String[] allIndividualNames;
     
     // every 4 items make a small group information of one property. 
     //1-name 2-type 3-domain 4-range. 
@@ -102,8 +103,8 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 //            {
 //                nameSpace = allOWLClasses[0].toStringID().substring(1,allOWLClasses[0].toStringID().indexOf("#")+1);
 //            }
-            nameSpace = ooxnm.getDefaultNamespace();
-            prefixManager = new DefaultPrefixManager(nameSpace);
+            defaultNameSpace = ooxnm.getDefaultNamespace();
+            prefixManager = new DefaultPrefixManager(defaultNameSpace);
             
             //get Axioms of ontology
             Set<OWLDeclarationAxiom> set = myOntology.getAxioms(AxiomType.DECLARATION);
@@ -184,10 +185,10 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         
         OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
         oceset.toArray(expression);
-        System.out.println(oceset.size()+this.nameSpace);
+        System.out.println(oceset.size()+this.defaultNameSpace);
         String str = expression[0].toString();
         System.out.println(str);
-        str = str.replaceAll(this.nameSpace, "");
+        str = str.replaceAll(this.defaultNameSpace, "");
         System.out.println(str+"\n");
         OWLEquivalentClassesAxiom oeca = this.myFactory.getOWLEquivalentClassesAxiom(expression);
         System.out.println(oeca.toString());
@@ -218,6 +219,20 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
         this.individualNames = getIndividualShortNames(express);
         return this.individualNames;
+    }
+    
+    public String[] getAllIndividuals()
+    {
+        Set<OWLNamedIndividual> set = this.myOntology.getIndividualsInSignature();
+        OWLNamedIndividual[] oni = new OWLNamedIndividual[set.size()];
+        set.toArray(oni);
+        this.allIndividualNames = this.getIndividualShortNames(oni);
+        return allIndividualNames;
+    }
+    
+    public String getDefaultNameSpace()
+    {
+        return this.defaultNameSpace;
     }
     
     private String getPropertySubType(OWLProperty op)
@@ -356,9 +371,9 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         {
             if(this.alDeclarationAxiom[i].toString().contains("("+type))
             {
-                int index_1 = alDeclarationAxiom[i].toString().indexOf(nameSpace);
+                int index_1 = alDeclarationAxiom[i].toString().indexOf(defaultNameSpace);
                 int index_2 = alDeclarationAxiom[i].toString().indexOf(">");
-                String propertyName = alDeclarationAxiom[i].toString().substring(index_1+nameSpace.length(), index_2);
+                String propertyName = alDeclarationAxiom[i].toString().substring(index_1+defaultNameSpace.length(), index_2);
                 String[] info = this.getPropertyInformation(type, propertyName);
                 list.add(propertyName);
                 list.add(info[0]);
@@ -497,7 +512,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         OWLAPIWrapper owl = new OWLAPIWrapper();
         String ontostr = owl.loadOntologyFile("owlfiles/koala.owl");
         System.out.println("loading ontology: "+ontostr);
-        System.out.println("Name Space : "+owl.nameSpace);
+        System.out.println("Name Space : "+owl.defaultNameSpace);
         
         for(OWLClass oc:owl.allOWLClasses)
         {
@@ -557,6 +572,14 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 //        }
 
 ////        System.out.println(owl.superClasses);
+        
+        System.out.println("=====================All Individuals============================");
+        String[] ins = owl.getAllIndividuals();
+        if (ins != null) {
+            for (String s8 : ins) {
+                System.out.println(s8);
+            }
+        }
         
         System.out.println("=====================Individuals============================");
         String[] in = owl.getIndividuals("Gender");
@@ -641,6 +664,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         
         
 //        System.out.println(op..getSignature().toArray(new OWLEntity[1])[0]);
+        
         
     }
 }
