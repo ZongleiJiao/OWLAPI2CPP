@@ -21,10 +21,9 @@ import org.semanticweb.owlapi.util.DefaultPrefixManager;
 public class OWLAPIWrapper {
     
     //sub types of axiom types
-    public final String TYPE_CLASS = "Class";
-    public final String TYPE_DATA_PROPERTY = "DataProperty";
-    public final String TYPE_OBJECT_PROPERTY = "ObjectProperty";    
-    public final String SPLITER = ":-=-:";
+    public final String ENTITIY_TYPE_CLASS = "Class";
+    public final String ENTITIY_TYPE_DATA_PROPERTY = "DataProperty";
+    public final String ENTITIY_TYPE_OBJECT_PROPERTY = "ObjectProperty";    
     public final String PROPERTY_TYPE_FUNCTIONAL = "Functional";
     public final String PROPERTY_TYPE_INVERSE = "Inverse";
     public final String PROPERTY_TYPE_INVERSE_FUNCTIONAL = "InverseFunctional";
@@ -33,6 +32,7 @@ public class OWLAPIWrapper {
     public final String PROPERTY_TYPE_TRANSITIVE = "Transitive";
     public final String PROPERTY_TYPE_REFLEXIVE = "Reflexive";
     public final String PROPERTY_TYPE_IRREFLEXIVE = "Irreflexive";
+    public final String SPLITER = ":-=-:";
     
     private String defaultNameSpace;        
     private OWLDataFactory myFactory;
@@ -60,6 +60,8 @@ public class OWLAPIWrapper {
 //    private String[] oObjectProperties;
     
 
+    //TODO 1.multiple namespaces 2.multiple superclasses 3.anonymous classes 
+    //4.equivalent classes 5.property realationships 6.empty domain or range of property
     public OWLAPIWrapper() {
     }
 
@@ -230,6 +232,15 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         return allIndividualNames;
     }
     
+//    public String[] getClassesByIndividuals(String name)
+//    {
+//        OWLNamedIndividual indl = myFactory.getOWLNamedIndividual(this.prefixManager.getIRI(name));
+////        Set<OWLClassExpression> set = indl..getNestedClassExpressions();
+//        
+//        System.out.println(indl.toString()+set.size()+set.toString());
+//        return null;
+//    }
+    
     public String getDefaultNameSpace()
     {
         return this.defaultNameSpace;
@@ -242,7 +253,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         if(op.isObjectPropertyExpression())
         {
             OWLObjectProperty obp = (OWLObjectProperty) op;
-            subType = this.TYPE_OBJECT_PROPERTY;
+            subType = this.ENTITIY_TYPE_OBJECT_PROPERTY;
             
             if(op.isFunctional(myOntology))
             {
@@ -271,7 +282,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             }
         }else if(op.isDataPropertyExpression())
         {
-            subType = this.TYPE_DATA_PROPERTY;
+            subType = this.ENTITIY_TYPE_DATA_PROPERTY;
             if(op.isFunctional(myOntology))
             {
                 subType = this.PROPERTY_TYPE_FUNCTIONAL + subType;
@@ -349,10 +360,10 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     {
         OWLProperty op = null;
         String[] info = new String[]{" "," "," "};
-        if(propertyType.equals(this.TYPE_DATA_PROPERTY))
+        if(propertyType.equals(this.ENTITIY_TYPE_DATA_PROPERTY))
         {
             op = this.myFactory.getOWLDataProperty(this.prefixManager.getIRI(propertyName));
-        }else if(propertyType.equals(this.TYPE_OBJECT_PROPERTY))
+        }else if(propertyType.equals(this.ENTITIY_TYPE_OBJECT_PROPERTY))
         {
             op = this.myFactory.getOWLObjectProperty(this.prefixManager.getIRI(propertyName));
         }
@@ -592,7 +603,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         
         
         System.out.println("=====================Object Property============================");
-        String[] op = owl.getAllPropertiesByType(owl.TYPE_OBJECT_PROPERTY);
+        String[] op = owl.getAllPropertiesByType(owl.ENTITIY_TYPE_OBJECT_PROPERTY);
         
         if(op != null)
         {
@@ -613,7 +624,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         
         System.out.println("=====================Data Property============================");
         
-        String[] dp = owl.getAllPropertiesByType(owl.TYPE_DATA_PROPERTY);
+        String[] dp = owl.getAllPropertiesByType(owl.ENTITIY_TYPE_DATA_PROPERTY);
         
         if(dp != null)
         {
@@ -664,7 +675,6 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         
         
 //        System.out.println(op..getSignature().toArray(new OWLEntity[1])[0]);
-        
         
     }
 }
