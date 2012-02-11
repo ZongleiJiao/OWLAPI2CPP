@@ -345,7 +345,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         return propertyType;
     }
     
-    private String[] getPropertyDomainsByName(String entityType, String propertyName)
+    public String[] getPropertyDomainsByName(String entityType, String propertyName)
     {
         String[] domains = null;
         OWLProperty op = null;
