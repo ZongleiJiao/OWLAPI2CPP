@@ -1,10 +1,14 @@
 # Apple directory files.
 .DS_Store
+
+#  not useful files 
 *.txt
+owlfiles/*.xml
+
 # Build Netbeans build directories.
 build/
 dist/
 src/edu/monash/infotech/test/
-nbproject/private/
+nbproject/*
 nbproject/project.properties
-owlfiles/*.xml
+nbproject/private/

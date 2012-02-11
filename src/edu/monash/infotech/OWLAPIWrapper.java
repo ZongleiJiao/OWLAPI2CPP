@@ -423,17 +423,25 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         return ranges;
     }
     
-    public String[] getAllPropertiesNameAndSubTypeByType(String type)
+    public String[] getAllPropertiesNameAndSubType()
     {
         List list = new ArrayList();
         for(int i=0;i<this.alDeclarationAxiom.length;i++)
         {
-            if(this.alDeclarationAxiom[i].toString().contains("("+type))
+            if(this.alDeclarationAxiom[i].toString().contains("("+this.ENTITIY_TYPE_OBJECT_PROPERTY))
             {
                 int index_1 = alDeclarationAxiom[i].toString().indexOf(defaultNameSpace);
                 int index_2 = alDeclarationAxiom[i].toString().indexOf(">");
                 String propertyName = alDeclarationAxiom[i].toString().substring(index_1+defaultNameSpace.length(), index_2);
-                String propertyType = this.getPropertyTypeByName(type, propertyName);
+                String propertyType = this.getPropertyTypeByName(this.ENTITIY_TYPE_OBJECT_PROPERTY, propertyName);
+                list .add(propertyType+propertyName);
+            }
+            if(this.alDeclarationAxiom[i].toString().contains("("+this.ENTITIY_TYPE_DATA_PROPERTY))
+            {
+                int index_1 = alDeclarationAxiom[i].toString().indexOf(defaultNameSpace);
+                int index_2 = alDeclarationAxiom[i].toString().indexOf(">");
+                String propertyName = alDeclarationAxiom[i].toString().substring(index_1+defaultNameSpace.length(), index_2);
+                String propertyType = this.getPropertyTypeByName(this.ENTITIY_TYPE_DATA_PROPERTY, propertyName);
                 list .add(propertyType+propertyName);
             }
         }
