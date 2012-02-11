@@ -9,6 +9,5 @@ owlfiles/*.xml
 build/
 dist/
 src/edu/monash/infotech/test/
-nbproject/*
-nbproject/project.properties
+nbproject/
 nbproject/private/
