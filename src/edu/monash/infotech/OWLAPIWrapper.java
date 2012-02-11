@@ -95,12 +95,10 @@ public class OWLAPIWrapper {
             
             OWLOntologyXMLNamespaceManager ooxnm = new OWLOntologyXMLNamespaceManager(manager,myOntology);
             
-System.out.println("DefaultNameSpace: "+ooxnm.getDefaultNamespace());
-System.out.println("NameSpace: "+ooxnm.getNamespaces().toString());
-System.out.println("Prefix: "+ooxnm.getPrefixes().toString());
-
-
-System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//System.out.println("DefaultNameSpace: "+ooxnm.getDefaultNamespace());
+//System.out.println("NameSpace: "+ooxnm.getNamespaces().toString());
+//System.out.println("Prefix: "+ooxnm.getPrefixes().toString());
+//System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
             //get all classes from ontology.
             Set<OWLClass> ocset = myOntology.getClassesInSignature();
