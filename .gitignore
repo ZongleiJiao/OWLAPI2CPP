@@ -5,5 +5,6 @@
 build/
 dist/
 src/edu/monash/infotech/test/
-/nbproject/private/
-/nbproject/
+nbproject/private/
+nbproject/project.properties
+owlfiles/*.xml

@@ -20,10 +20,10 @@ import org.semanticweb.owlapi.util.DefaultPrefixManager;
  */
 public class OWLAPIWrapper {
     
-    //sub types of axiom types
+    //types of property types
     public final String ENTITIY_TYPE_CLASS = "Class";
     public final String ENTITIY_TYPE_DATA_PROPERTY = "DataProperty";
-    public final String ENTITIY_TYPE_OBJECT_PROPERTY = "ObjectProperty";    
+    public final String ENTITIY_TYPE_OBJECT_PROPERTY = "ObjectProperty";
     public final String PROPERTY_TYPE_FUNCTIONAL = "Functional";
     public final String PROPERTY_TYPE_INVERSE = "Inverse";
     public final String PROPERTY_TYPE_INVERSE_FUNCTIONAL = "InverseFunctional";
@@ -33,6 +33,18 @@ public class OWLAPIWrapper {
     public final String PROPERTY_TYPE_REFLEXIVE = "Reflexive";
     public final String PROPERTY_TYPE_IRREFLEXIVE = "Irreflexive";
     public final String SPLITER = ":-=-:";
+    //short for property types and entity types
+    public final String ENTITIY_TYPE_CLASS_SHORT = "C";
+    public final String ENTITIY_TYPE_DATA_PROPERTY_SHORT = "D";
+    public final String ENTITIY_TYPE_OBJECT_PROPERTY_SHORT = "O";   
+    public final String PROPERTY_TYPE_FUNCTIONAL_SHORT = "FU";
+    public final String PROPERTY_TYPE_INVERSE_SHORT = "IN";
+    public final String PROPERTY_TYPE_INVERSE_FUNCTIONAL_SHORT = "IF";
+    public final String PROPERTY_TYPE_SYMMETRIC_SHORT = "SY";
+    public final String PROPERTY_TYPE_ASYMMETRIC_SHORT = "AS";
+    public final String PROPERTY_TYPE_TRANSITIVE_SHORT = "TR";
+    public final String PROPERTY_TYPE_REFLEXIVE_SHORT = "RE";
+    public final String PROPERTY_TYPE_IRREFLEXIVE_SHORT = "IR"; 
     
     private String defaultNameSpace;        
     private OWLDataFactory myFactory;
@@ -52,7 +64,15 @@ public class OWLAPIWrapper {
     // every 4 items make a small group information of one property. 
     //1-name 2-type 3-domain 4-range. 
     //if any item is not provied by ontology, one " " will be writen instead
-    private String[] properties;
+    private String[] properties;    
+    //format: 1->is DataProperty(D) or ObjectProperty(O), 
+    //2->number(y) sub types does the property have(if it's 2, means this property has two sub types. eg: functional and symmetric)
+    //3~X(X=(y+1)*2)-> shortcut of all sub types that this property has.eg:FU(functional) or FUSY(functional and symmetric)
+    //the name of this property will be appended in the end
+    private String[] propertyNameAndType;
+    private String[] subPropertyNames;
+    private String[] superPropertyNames;
+    private String[] disjointPropertyNames;
     
      
 //    private String[] equivalentClasses;
@@ -126,7 +146,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 
     //get all class names from the ontology provided
     public String[] getAllOWLClasses() {
-        allOWLClassNames = getClassShortNames(allOWLClasses);
+        allOWLClassNames = getShortNames(allOWLClasses);
         return allOWLClassNames;
     }
 
@@ -216,10 +236,10 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             return null;
         }
         
-        OWLIndividual[] express = new OWLIndividual[set.size()];
+        OWLNamedIndividual[] express = new OWLNamedIndividual[set.size()];
         set.toArray(express);
 
-        this.individualNames = getIndividualShortNames(express);
+        this.individualNames = this.getShortNames(express);
         return this.individualNames;
     }
     
@@ -228,7 +248,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         Set<OWLNamedIndividual> set = this.myOntology.getIndividualsInSignature();
         OWLNamedIndividual[] oni = new OWLNamedIndividual[set.size()];
         set.toArray(oni);
-        this.allIndividualNames = this.getIndividualShortNames(oni);
+        this.allIndividualNames = this.getShortNames(oni);
         return allIndividualNames;
     }
     
@@ -246,75 +266,299 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         return this.defaultNameSpace;
     }
     
-    private String getPropertySubType(OWLProperty op)
+    public String getPropertyTypeByName(String entityType, String propertyName)
     {
-        String subType = "";
+        OWLProperty op = null;
+        if(entityType.equals(this.ENTITIY_TYPE_DATA_PROPERTY))
+        {
+            op = this.myFactory.getOWLDataProperty(this.prefixManager.getIRI(propertyName));
+        }else if(entityType.equals(this.ENTITIY_TYPE_OBJECT_PROPERTY))
+        {
+            op = this.myFactory.getOWLObjectProperty(this.prefixManager.getIRI(propertyName));
+        }
+        
+        //format: 1->is DataProperty(D) or ObjectProperty(O), 
+        //2->number(y) sub types does the property have(if it's 2, means this property has two sub types. eg: functional and symmetric)
+        //3~X(X=(y+1)*2)-> shortcut of all sub types that this property has.eg:FU(functional) or FUSY(functional and symmetric)
+        String propertyType = "";
+        int count = 0;
         
         if(op.isObjectPropertyExpression())
         {
             OWLObjectProperty obp = (OWLObjectProperty) op;
-            subType = this.ENTITIY_TYPE_OBJECT_PROPERTY;
+            
+            if(obp.isInverseFunctional(myOntology))
+            {
+                propertyType += this.PROPERTY_TYPE_INVERSE_FUNCTIONAL_SHORT;
+                count++;
+            }else{
+                if(op.isFunctional(myOntology))
+                {
+                    propertyType += this.PROPERTY_TYPE_FUNCTIONAL_SHORT;
+                    count++;
+                }
+                if(!(obp.getInverses(myOntology).isEmpty()))
+                {
+                    propertyType += this.PROPERTY_TYPE_INVERSE_SHORT;
+                    count++;
+                }
+            }
+            
+            if(obp.isAsymmetric(myOntology))
+            {
+                propertyType += this.PROPERTY_TYPE_ASYMMETRIC_SHORT;
+                count++;
+            }
+            if(obp.isIrreflexive(myOntology))
+            {
+                propertyType += this.PROPERTY_TYPE_IRREFLEXIVE_SHORT;
+                count++;
+            }
+            if(obp.isReflexive(myOntology))
+            {
+                propertyType += this.PROPERTY_TYPE_REFLEXIVE_SHORT;
+                count++;
+            }
+            if(obp.isSymmetric(myOntology))
+            {
+                propertyType += this.PROPERTY_TYPE_SYMMETRIC_SHORT;
+                count++;
+            }
+            if(obp.isTransitive(myOntology))
+            {
+                propertyType += this.PROPERTY_TYPE_TRANSITIVE_SHORT;
+                count++;            
+            }           
+            
+            propertyType = this.ENTITIY_TYPE_OBJECT_PROPERTY_SHORT+count+propertyType;
+        }else if(op.isDataPropertyExpression())
+        {
+            OWLDataProperty odp = (OWLDataProperty) op;
+            if(odp.isFunctional(myOntology))
+            {
+                propertyType += this.PROPERTY_TYPE_FUNCTIONAL_SHORT;
+                count++;
+            }
+            
+            propertyType = this.ENTITIY_TYPE_DATA_PROPERTY_SHORT+count+propertyType;
+        }
+        return propertyType;
+    }
+    
+    private String[] getPropertyDomainsByName(String entityType, String propertyName)
+    {
+        String[] domains = null;
+        OWLProperty op = null;
+        if(entityType.equals(this.ENTITIY_TYPE_DATA_PROPERTY))
+        {
+            op = this.myFactory.getOWLDataProperty(this.prefixManager.getIRI(propertyName));
+        }else if(entityType.equals(this.ENTITIY_TYPE_OBJECT_PROPERTY))
+        {
+            op = this.myFactory.getOWLObjectProperty(this.prefixManager.getIRI(propertyName));
+        }
+        int i=0;
+        Set<OWLClassExpression> set = op.getDomains(myOntology);
+        domains = new String[set.size()];
+        try{
+            Iterator it = set.iterator();
+            OWLClassExpression e = (OWLClassExpression) it.next();
+            domains[i] = this.getClassShortName(e);
+
+            while(it.hasNext())
+            {
+                i++;
+                OWLClassExpression e2 = (OWLClassExpression) it.next();
+                domains[i] = this.getClassShortName(e2);
+            }
+        }catch(Exception e)
+        {
+            domains = new String[]{""};
+//            e.printStackTrace();
+        }finally{            
+//            domains = new String[]{""};
+        }
+        return domains;
+    }
+    
+    public String[] getPropertyRangesByName(String entityType, String propertyName)
+    {
+        String[] ranges = null;
+        OWLProperty op = null;
+        if(entityType.equals(this.ENTITIY_TYPE_DATA_PROPERTY))
+        {
+            op = this.myFactory.getOWLDataProperty(this.prefixManager.getIRI(propertyName));
+        }else if(entityType.equals(this.ENTITIY_TYPE_OBJECT_PROPERTY))
+        {
+            op = this.myFactory.getOWLObjectProperty(this.prefixManager.getIRI(propertyName));
+        }
+        
+        Set set = op.getRanges(myOntology);
+        ranges = new String[set.size()];
+        try{
+            Iterator it = set.iterator();
+            int i=0;
+            if(op.isObjectPropertyExpression())
+            {
+                ranges[i] = this.getClassShortName((OWLClassExpression)it.next());
+                while(it.hasNext())
+                {
+                    i++;
+                    ranges[i] = this.getClassShortName((OWLClassExpression)it.next());
+                }
+            }else if(op.isDataPropertyExpression())
+            {
+                ranges[i] = it.next().toString();
+                while(it.hasNext())
+                {
+                    ranges[i] = it.next().toString();;
+                }
+            }
+        }catch(Exception e)
+        {
+            
+            ranges = new String[]{""};
+//            e.printStackTrace();
+        }finally{
+        }
+        return ranges;
+    }
+    
+    public String[] getAllPropertiesNameAndSubTypeByType(String type)
+    {
+        List list = new ArrayList();
+        for(int i=0;i<this.alDeclarationAxiom.length;i++)
+        {
+            if(this.alDeclarationAxiom[i].toString().contains("("+type))
+            {
+                int index_1 = alDeclarationAxiom[i].toString().indexOf(defaultNameSpace);
+                int index_2 = alDeclarationAxiom[i].toString().indexOf(">");
+                String propertyName = alDeclarationAxiom[i].toString().substring(index_1+defaultNameSpace.length(), index_2);
+                String propertyType = this.getPropertyTypeByName(type, propertyName);
+                list .add(propertyType+propertyName);
+            }
+        }
+        this.propertyNameAndType = new String[list.size()];
+        list.toArray(propertyNameAndType);
+        return propertyNameAndType;
+    }
+    
+    private OWLProperty createProperty(String type, String name)
+    {
+        OWLProperty op = null;
+        if(type.equals(this.ENTITIY_TYPE_DATA_PROPERTY))
+        {
+            op = this.myFactory.getOWLDataProperty(this.prefixManager.getIRI(name));
+        }else if(type.equals(this.ENTITIY_TYPE_OBJECT_PROPERTY))
+        {
+            op = this.myFactory.getOWLObjectProperty(this.prefixManager.getIRI(name));
+        }
+        return op;
+    }
+    
+    public String[] getSubProperites(String type, String name)
+    {
+        OWLProperty op = this.createProperty(type, name);        
+        Set set = op.getSubProperties(myOntology);
+        OWLProperty[] ops = new OWLProperty[set.size()];
+        set.toArray(ops);
+        this.subPropertyNames = new String[set.size()];
+        this.subPropertyNames = this.getShortNames(ops);
+        return subPropertyNames;
+    }
+    
+    public String[] getSuperProperites(String type, String name)
+    {
+        OWLProperty op = this.createProperty(type, name);        
+        Set set = op.getSuperProperties(myOntology);
+        OWLProperty[] ops = new OWLProperty[set.size()];
+        set.toArray(ops);
+        this.superPropertyNames = new String[set.size()];
+        this.superPropertyNames = this.getShortNames(ops);
+        return superPropertyNames;
+    }
+    
+    public String[] getDisjointProperties(String type, String name)
+    {
+        OWLProperty op = this.createProperty(type, name);        
+        Set set = op.getDisjointProperties(myOntology);
+        OWLProperty[] ops = new OWLProperty[set.size()];
+        set.toArray(ops);
+        this.disjointPropertyNames = new String[set.size()];
+        this.disjointPropertyNames = this.getShortNames(ops);
+        return disjointPropertyNames;
+    }
+    
+    //TODO getEquivalentProperties()
+    public String[] getEquivalentProperties(String type, String name)
+    {
+        return null;
+    }
+    
+    private String getPropertySubType(OWLProperty op)
+    {
+        String propertyType = "";
+        
+        if(op.isObjectPropertyExpression())
+        {
+            OWLObjectProperty obp = (OWLObjectProperty) op;
+            propertyType = this.ENTITIY_TYPE_OBJECT_PROPERTY;
             
             if(op.isFunctional(myOntology))
             {
-                subType = this.PROPERTY_TYPE_FUNCTIONAL + subType;
+                propertyType = this.PROPERTY_TYPE_FUNCTIONAL + propertyType;
             }else if(obp.isAsymmetric(myOntology))
             {
-                subType = this.PROPERTY_TYPE_ASYMMETRIC + subType;
+                propertyType = this.PROPERTY_TYPE_ASYMMETRIC + propertyType;
             }else if(obp.isInverseFunctional(myOntology))
             {
-                subType = this.PROPERTY_TYPE_INVERSE_FUNCTIONAL + subType;
+                propertyType = this.PROPERTY_TYPE_INVERSE_FUNCTIONAL + propertyType;
             }else if(obp.isIrreflexive(myOntology))
             {
-                subType = this.PROPERTY_TYPE_IRREFLEXIVE + subType;
+                propertyType = this.PROPERTY_TYPE_IRREFLEXIVE + propertyType;
             }else if(obp.isReflexive(myOntology))
             {
-                subType = this.PROPERTY_TYPE_REFLEXIVE + subType;
+                propertyType = this.PROPERTY_TYPE_REFLEXIVE + propertyType;
             }else if(obp.isSymmetric(myOntology))
             {
-                subType = this.PROPERTY_TYPE_SYMMETRIC + subType;
+                propertyType = this.PROPERTY_TYPE_SYMMETRIC + propertyType;
             }else if(obp.isTransitive(myOntology))
             {
-                subType = this.PROPERTY_TYPE_TRANSITIVE + subType;            
+                propertyType = this.PROPERTY_TYPE_TRANSITIVE + propertyType;            
             }else if(!(obp.getInverses(myOntology).isEmpty()))
             {
-                subType = this.PROPERTY_TYPE_INVERSE + subType;
+                propertyType = this.PROPERTY_TYPE_INVERSE + propertyType;
             }
         }else if(op.isDataPropertyExpression())
         {
-            subType = this.ENTITIY_TYPE_DATA_PROPERTY;
-            if(op.isFunctional(myOntology))
+            OWLDataProperty odp = (OWLDataProperty) op;
+            propertyType = this.ENTITIY_TYPE_DATA_PROPERTY;
+            if(odp.isFunctional(myOntology))
             {
-                subType = this.PROPERTY_TYPE_FUNCTIONAL + subType;
+                propertyType = this.PROPERTY_TYPE_FUNCTIONAL + propertyType;
             }
         }
-        return subType;
+        return propertyType;
     }
     
     private String getPropertyDomains(OWLProperty op)
     {
         String domain = "";
         try{
-            
-            
-        
-        Set<OWLClassExpression> set = op.getDomains(myOntology);
-//        OWLClassExpression[] ooo = new OWLClassExpression[set.size()];
-//        set.toArray(ooo);
-//        try{
-//System.out.print(set.size()+"------------");        
-        Iterator it = set.iterator();
-        OWLClassExpression e = (OWLClassExpression) it.next();
-//System.out.println("----->"+e);
-        domain = this.getClassShortName(e);
-        
-        while(it.hasNext())
-        {
-            OWLClassExpression e2 = (OWLClassExpression) it.next();
-            domain += this.SPLITER+this.getClassShortName(e2);
-        }
-        
-        
+            Set<OWLClassExpression> set = op.getDomains(myOntology);
+    //        OWLClassExpression[] ooo = new OWLClassExpression[set.size()];
+    //        set.toArray(ooo);
+    //        try{
+    //System.out.print(set.size()+"------------");        
+            Iterator it = set.iterator();
+            OWLClassExpression e = (OWLClassExpression) it.next();
+    //System.out.println("----->"+e);
+            domain = this.getClassShortName(e);
+
+            while(it.hasNext())
+            {
+                OWLClassExpression e2 = (OWLClassExpression) it.next();
+                domain += this.SPLITER+this.getClassShortName(e2);
+            }
         }catch(Exception e)
         {
 //            e.printStackTrace();
@@ -327,28 +571,23 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         String range = "";
         
         try{
-            
-            
-            
-        Set set = op.getRanges(myOntology);
-        Iterator it = set.iterator();
-        if(op.isObjectPropertyExpression())
-        {
-            range = this.getClassShortName((OWLClassExpression)it.next());
-            while(it.hasNext())
+            Set set = op.getRanges(myOntology);
+            Iterator it = set.iterator();
+            if(op.isObjectPropertyExpression())
             {
-                range += this.SPLITER+this.getClassShortName((OWLClassExpression)it.next());
-            }
-        }else if(op.isDataPropertyExpression())
-        {
-            range = it.next().toString();
-            while(it.hasNext())
+                range = this.getClassShortName((OWLClassExpression)it.next());
+                while(it.hasNext())
+                {
+                    range += this.SPLITER+this.getClassShortName((OWLClassExpression)it.next());
+                }
+            }else if(op.isDataPropertyExpression())
             {
-                range += this.SPLITER+it.next().toString();;
+                range = it.next().toString();
+                while(it.hasNext())
+                {
+                    range += this.SPLITER+it.next().toString();;
+                }
             }
-        }
-        
-        
         }catch(Exception e)
         {
 //            e.printStackTrace();
@@ -368,10 +607,12 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             op = this.myFactory.getOWLObjectProperty(this.prefixManager.getIRI(propertyName));
         }
         
-        info[0] = this.getPropertySubType(op);
-        info[1] = this.getPropertyDomains(op);
-        info[2] = this.getPropertyRanges(op); 
-        
+//        info[0] = this.getPropertySubType(op);
+//        info[1] = this.getPropertyDomains(op);
+//        info[2] = this.getPropertyRanges(op); 
+        info[0] = this.getPropertyTypeByName(propertyType,propertyName);
+        info[1] = this.getPropertyDomainsByName(propertyType,propertyName)[0];
+        info[2] = this.getPropertyRangesByName(propertyType,propertyName)[0];
         return info;
     }
     
@@ -397,68 +638,20 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         return properties;
     }
     
-    public String[] getDataProperties(String className) {
-//        OWLClass cls = myFactory.getOWLClass(IRI.create(classPrefix.substring(1) + className));
-//        Set<OWLDataProperty> set = cls.getDataPropertiesInSignature();
-//        if (set.size() < 1) {
-//            System.out.println(className + " null  null");
-//            return null;
-//        }
-//        OWLDataProperty[] express = new OWLDataProperty[set.size()];
-//        set.toArray(express);
-//        this.dataProperties = new String[express.length];
-//        for (int i = 0; i < express.length; i++) {
-////            oObjectProperties[i] = express[i].toStringID();
-//            System.out.println(express[i].toString() + "<----->" + express[i].toStringID());
-//        }
-        return null;
-
+    public String[] getAllDataProperties() {
+        return this.getAllPropertiesByType(this.ENTITIY_TYPE_DATA_PROPERTY);
     }
 
-    public String[] getObjectProperties(String className) {
-//        OWLClass cls = myFactory.getOWLClass(IRI.create(classPrefix.substring(1) + className));
-//        Set<OWLAnnotation> sss = cls.getAnnotations(myOntology);
-//        System.out.println("----------->"+sss);
-//        
-//        Set<OWLObjectProperty> set = cls.getObjectPropertiesInSignature();
-//        if (set.size() < 1) {
-//            System.out.println(classPrefix.substring(1) + className + " null  null123");
-//            return null;
-//        }
-//        OWLObjectProperty[] express = new OWLObjectProperty[set.size()];
-//        set.toArray(express);
-//        this.oObjectProperties = new String[express.length];
-//        for (int i = 0; i < express.length; i++) {
-////            oObjectProperties[i] = express[i].toStringID();
-//            System.out.println(express[i].toString() + "<----->" + express[i].toStringID());
-//        }
-        return null;
+    public String[] getObjectProperties() {
+        return this.getAllPropertiesByType(this.ENTITIY_TYPE_OBJECT_PROPERTY);
     }
     
-    private String[] getIndividualShortNames(OWLIndividual[] individual)
+    private String[] getShortNames(OWLEntity[] ents)
     {
-        String[] temp = new String[individual.length];
-        for(int i=0;i<individual.length;i++)
+        String[] temp = new String[ents.length];
+        for(int i=0;i<ents.length;i++)
         {
-            String shortName = prefixManager.getShortForm(individual[i].asOWLNamedIndividual());
-            if(shortName.equals("owl:Thing"))
-            {
-                shortName = "Thing";
-            }else
-            {
-                shortName = shortName.substring(1);
-            }
-            temp[i] = shortName;            
-        }
-        return temp;
-    }
-
-    private String[] getClassShortNames(OWLClass[] classes)
-    {
-        String[] temp = new String[classes.length];
-        for(int i=0;i<classes.length;i++)
-        {
-            String shortName = prefixManager.getShortForm(classes[i]);
+            String shortName = prefixManager.getShortForm(ents[i]);
             if(shortName.equals("owl:Thing"))
             {
                 shortName = "Thing";
@@ -471,6 +664,7 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         return temp;
     }
     
+    //TODO anonymous class
     private String[] getClassShortNames(OWLClassExpression[] classExpression)
     {
         String[] temp = null;
@@ -516,165 +710,9 @@ System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         
         return shortName;
     }
+
+    public OWLClass[] getAllOWLClass() {
+        return allOWLClasses;
+    }    
     
-    public static void main(String[] args) {
-        
-        System.out.println("=====================Load Ontology============================");
-        OWLAPIWrapper owl = new OWLAPIWrapper();
-        String ontostr = owl.loadOntologyFile("owlfiles/koala.owl");
-        System.out.println("loading ontology: "+ontostr);
-        System.out.println("Name Space : "+owl.defaultNameSpace);
-        
-        for(OWLClass oc:owl.allOWLClasses)
-        {
-            System.out.println(oc.toString());
-        }
-        
-        System.out.println("=====================All Classes(Names)============================");
-        String[] aoc = owl.getAllOWLClasses();
-        System.out.println("Number of classes---->" + aoc.length);
-        for (String name : aoc) {
-            System.out.println(name);
-        }
-
-        System.out.println("=====================Sub Classes============================");
-        String className1 = "Animal";
-        String[] sc = owl.getSubClasses(className1);
-        System.out.println(className1+"'s sub classes are:");
-
-        if (sc != null) {
-            for (String name : sc) {
-                System.out.println(name);
-            }
-        }else{
-            System.out.println("No sub classes");
-        }
-        
-        System.out.println("=====================Super classes============================");
-        String className2 = "GraduateStudent";
-        String[] suc = owl.getSuperClasses(className2);
-        System.out.println(className2+"'s super classes are:");
-        
-        if (sc != null) {
-            for (String name : suc) {
-                System.out.println(name);
-            }
-        }else{
-            System.out.println("No super classes");
-        }
-        
-        System.out.println("=====================Disjoint classes============================");
-        String className3 = "Person";
-        String[] dc = owl.getDisjointClasses(className3);
-        System.out.println(className3+"'s disjoint classes are:");
-        
-        if (dc != null) {
-            for (String name : dc) {
-                System.out.println(name);
-            }
-        }
-
-        System.out.println("=====================Equivalent classes============================");
-        String[] ec = owl.getEquivalentClasses("Student");
-//        if (ec != null) {
-//            for (String name : ec) {
-//                System.out.println(name);
-//            }
-//        }
-
-////        System.out.println(owl.superClasses);
-        
-        System.out.println("=====================All Individuals============================");
-        String[] ins = owl.getAllIndividuals();
-        if (ins != null) {
-            for (String s8 : ins) {
-                System.out.println(s8);
-            }
-        }
-        
-        System.out.println("=====================Individuals============================");
-        String[] in = owl.getIndividuals("Gender");
-        if (in != null) {
-            for (String s8 : in) {
-                System.out.println(s8);
-            }
-        }
-        
-        
-        
-        System.out.println("=====================Object Property============================");
-        String[] op = owl.getAllPropertiesByType(owl.ENTITIY_TYPE_OBJECT_PROPERTY);
-        
-        if(op != null)
-        {
-            int i=0;
-            for(String p : op)
-            {
-                System.out.println(p);
-                i++;
-                if(i%4==0)
-                {
-                    System.out.println("-------------------");
-                }
-            }
-        }else{
-            System.out.println("Wrong type or no properties of this type");
-        }
-
-        
-        System.out.println("=====================Data Property============================");
-        
-        String[] dp = owl.getAllPropertiesByType(owl.ENTITIY_TYPE_DATA_PROPERTY);
-        
-        if(dp != null)
-        {
-            int i=0;
-            for(String p: dp)
-            {
-                System.out.println(p);
-                i++;
-                if(i%4==0)
-                {
-                    System.out.println("-------------------");
-                }
-            }
-        }else{
-            System.out.println("Wrong type or no properties of this type");   
-        }
-        
-        
-        System.out.println("=====================Axioms============================");
-        
-//        OWLClass cls = owl.myFactory.getOWLClass(owl.pm.getIRI("Animal"));
-//        Set<OWLAxiom> set = cls.getReferencingAxioms(owl.myOntology);
-//        
-//        Set<OWLDeclarationAxiom> set = owl.myOntology.getAxioms(AxiomType.DECLARATION);
-        Set<OWLAxiom> set = owl.myOntology.getAxioms();
-        OWLAxiom[] oa = new OWLAxiom[set.size()];
-        set.toArray(oa);
-        int i=0;
-        for(OWLAxiom ooa : oa)
-        {
-            
-          if(!ooa.toString().contains("(Class"))
-          {
-          System.out.println(ooa.toString());
-              i++;
-          }
-        }
-        System.out.println(i);
-          
-//          
-//          if(ooa.getAxiomType().getName().equals(AxiomType.DECLARATION.getName()) )
-//          {
-//              System.out.println("============Declaration");i++;
-//          }
-        
-//        OWLObjectProperty op = owl.myFactory.getOWLObjectProperty(owl.pm.getIRI("hasGender"));
-        
-        
-        
-//        System.out.println(op..getSignature().toArray(new OWLEntity[1])[0]);
-        
-    }
 }
