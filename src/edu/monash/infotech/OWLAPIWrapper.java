@@ -342,11 +342,25 @@ public class OWLAPIWrapper {
             j=i+1;
             System.out.println("i= "+i+ " j= "+j);
             String temp = values[i];
-            
+            int count = 0;
+            for(int k=0;k<values[i].length();k++){
+                if(values[i].charAt(k)=='('){
+                    count++;
+                }else if(values[i].charAt(k) == ')'){
+                    count--;
+                }
+            }
             if(temp.startsWith(objectIntersectionOf) || temp.startsWith(objectUnionOf)){                
                 for(;j<values.length;j++){
                     temp += " "+values[j];
-                    if(values[j].endsWith("))")){                       
+                    for(int k=0;k<values[j].length();k++){
+                        if(values[j].charAt(k)=='('){
+                            count++;
+                        }else if(values[j].charAt(k) == ')'){
+                            count--;
+                        }
+                    }
+                    if(count == 0){                       
                         break; 
                     }
                 }
@@ -366,7 +380,7 @@ public class OWLAPIWrapper {
     }
 
     //TODO -----
-    public String[] getEquivalentClasses2(String className) {
+    public String getEquivalentClassesFormula(String className) {
         OWLClass cls = myFactory.getOWLClass(this.prefixManager.getIRI(className));
         Set<OWLClassExpression> oceset = cls.getEquivalentClasses(myOntology);System.out.println(cls.toString());
         if (oceset.size() < 1) {
@@ -386,14 +400,15 @@ public class OWLAPIWrapper {
         System.out.println("type: "+type);
         str = replaceLogic(type ,replaceLogic2Symbol(type,str));
         System.out.println("==="+str+"\n");
-        OWLEquivalentClassesAxiom oeca = this.myFactory.getOWLEquivalentClassesAxiom(expression);
-        System.out.println(oeca.toString());
-        Set<OWLClassExpression> oceset2 = oeca.getNestedClassExpressions();
-        System.out.println(oceset2.size());
-        for(OWLClassExpression s:oceset2)
-        {
-            System.out.println(s.toString());
-        }
+        return str;
+//        OWLEquivalentClassesAxiom oeca = this.myFactory.getOWLEquivalentClassesAxiom(expression);
+//        System.out.println(oeca.toString());
+//        Set<OWLClassExpression> oceset2 = oeca.getNestedClassExpressions();
+//        System.out.println(oceset2.size());
+//        for(OWLClassExpression s:oceset2)
+//        {
+//            System.out.println(s.toString());
+//        }
         
 //        for(OWLClassExpression s:expression)
 //        {
@@ -401,7 +416,7 @@ public class OWLAPIWrapper {
 //        }
 //        this.equivalentClasses = this.getClassShortNames(expression);   
 //        return equivalentClasses;
-        return null;
+//        return null;
     }
     
     public String getEquivalentClasses(String className) {
