@@ -268,19 +268,43 @@
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#Student"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#hasChildren"/>
-                        <owl:allValuesFrom rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#Female"/>
-                    </owl:Restriction>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#hasGender"/>
-                        <owl:hasValue rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#male"/>
-                    </owl:Restriction>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#hasChildren"/>
-                        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">3</owl:cardinality>
-                    </owl:Restriction>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#Student"/>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#hasChildren"/>
+                                        <owl:allValuesFrom rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#Male"/>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#hasGender"/>
+                                        <owl:hasValue rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#female"/>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:unionOf>
+                    </owl:Class>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class>
+                                <owl:unionOf rdf:parseType="Collection">
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#hasGender"/>
+                                        <owl:hasValue rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#male"/>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#hasChildren"/>
+                                        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">3</owl:cardinality>
+                                    </owl:Restriction>
+                                </owl:unionOf>
+                            </owl:Class>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#hasChildren"/>
+                                <owl:allValuesFrom rdf:resource="http://protege.stanford.edu/plugins/owl/owl-library/koala.owl#Female"/>
+                            </owl:Restriction>
+                        </owl:unionOf>
+                    </owl:Class>
                 </owl:intersectionOf>
             </owl:Class>
         </owl:equivalentClass>

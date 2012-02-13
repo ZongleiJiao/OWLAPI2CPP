@@ -194,9 +194,179 @@ public class OWLAPIWrapper {
         this.disjointClassNames = this.getClassShortNames(expression);
         return disjointClassNames;
     }
+    
+    private String removeNameSpace(String str){
+        return str.replaceAll(this.defaultNameSpace, "");
+    }
+    
+    private String replaceExpression2Symbol(String str){
+        String objectAllValuesFrom = "ObjectAllValuesFrom";
+        String objectHasValue = "ObjectHasValue";
+        String objectExactCardinality = "ObjectExactCardinality";
+        
+        int indexOfObjectAllValuesFrom = -1;
+        int indexOfEndObjectAllValuesFrom = -1;
+        int indexOfObjectHasValue = -1;
+        int indexOfEndObjectHasValue = -1;
+        int indexOfObjectExactCardinality = -1;
+        int indexOfEndObjectExactCardinality = -1;
+        
+        
+        indexOfObjectAllValuesFrom = str.indexOf(objectAllValuesFrom);
+        
+        
+        while(indexOfObjectAllValuesFrom != -1)
+        {
+            indexOfEndObjectAllValuesFrom = str.indexOf(")", indexOfObjectAllValuesFrom);
+        
+//            System.out.println(indexOfObjectAllValuesFrom+"---"+indexOfEndObjectAllValuesFrom);
+            String origin = str.substring(indexOfObjectAllValuesFrom,indexOfEndObjectAllValuesFrom+1);
+//            System.out.println(origin);
+            String value = str.substring(indexOfObjectAllValuesFrom+objectAllValuesFrom.length()+1, indexOfEndObjectAllValuesFrom);
+//            System.out.println(value);
+            String[] values = value.split(" ");
+//            System.out.println(values[0]+"---"+values[1]);
+            String modified = "∀"+values[0]+"("+values[1]+")";
+//            System.out.println(modified);
+            str = str.replace(origin, modified);
+//            System.out.println(str);
+                        
+            indexOfObjectAllValuesFrom = str.indexOf(objectAllValuesFrom);
+        }
+        
+//        System.out.println("--"+str);
+        
+        indexOfObjectHasValue = str.indexOf(objectHasValue);
+        
+        while(indexOfObjectHasValue != -1)
+        {
+            indexOfEndObjectHasValue = str.indexOf(")", indexOfObjectHasValue);
+        
+//            System.out.println(indexOfObjectHasValue+"---"+indexOfEndObjectHasValue);
+            String origin = str.substring(indexOfObjectHasValue,indexOfEndObjectHasValue+1);
+//            System.out.println(origin);
+            String value = str.substring(indexOfObjectHasValue+objectHasValue.length()+1, indexOfEndObjectHasValue);
+//            System.out.println(value);
+            String[] values = value.split(" ");
+//            System.out.println(values[0]+"---"+values[1]);
+            String modified = "∃"+values[0]+"("+values[1]+")";
+//            System.out.println(modified);
+            str = str.replace(origin, modified);
+//            System.out.println(str);
+                        
+            indexOfObjectHasValue = str.indexOf(objectHasValue);
+        }
+        
+        indexOfObjectExactCardinality = str.indexOf(objectExactCardinality);
+        while(indexOfObjectExactCardinality != -1)
+        {
+            indexOfEndObjectExactCardinality = str.indexOf(")", indexOfObjectExactCardinality);
+        
+//            System.out.println(indexOfObjectHasValue+"---"+indexOfEndObjectHasValue);
+            String origin = str.substring(indexOfObjectExactCardinality,indexOfEndObjectExactCardinality+1);
+//            System.out.println(origin);
+            String value = str.substring(indexOfObjectExactCardinality+objectExactCardinality.length()+1, indexOfEndObjectExactCardinality);
+//            System.out.println(value);
+            String[] values = value.split(" ");
+//            System.out.println(values[0]+"---"+values[1]);
+            String modified = "≡"+values[1]+values[0]+"("+values[2]+")";
+//            System.out.println(modified);
+            str = str.replace(origin, modified);
+//            System.out.println(str);
+                        
+            indexOfObjectExactCardinality = str.indexOf(objectExactCardinality);
+        }
+        
+        return str;
+    }
+    
+    private String replaceLogic(String type,String[] items)
+    {
+        String objectIntersectionOf = "ObjectIntersectionOf";
+        String objectUnionOf = "ObjectUnionOf";
+        
+        for(int i=0;i<items.length;i++){
+            if(items[i].startsWith(objectIntersectionOf)){
+                System.out.println("1--"+items[i]);
+                items[i] = "("+replaceLogic(objectIntersectionOf,replaceLogic2Symbol(objectIntersectionOf,items[i]))+")";
+                System.out.println("2--"+items[i]);
+            }else if(items[i].startsWith(objectUnionOf)){
+                System.out.println("11--"+items[i]);
+                items[i] = "("+replaceLogic(objectUnionOf,replaceLogic2Symbol(objectUnionOf,items[i]))+")";
+                System.out.println("22--"+items[i]);
+            }
+        }
+        
+        String res = items[0];
+        for(int j=1;j<items.length;j++){
+            if(type.equals(objectIntersectionOf)){
+                res += " ∩ "+items[j];                
+            }else if(type.equals(objectUnionOf)){
+                res += " ∪ "+items[j];
+            }
+        }
+        return res;
+    }
+    
+    private String[] replaceLogic2Symbol(String type, String str){
+        System.out.println("3--type: "+type+" str:"+str);
+        
+        String objectIntersectionOf = "ObjectIntersectionOf";
+        String objectUnionOf = "ObjectUnionOf";
+//        String complementOf= "complementOf";
+        
+        int indexOfObjectIntersectionOf = -1;
+        int indexEndOfObjectIntersectionOf = -1;
+        int indexOfObjectUnionOf = -1;
+        int indexEndOfObjectUnionOf = -1;
+        
+        indexOfObjectIntersectionOf = str.indexOf(objectIntersectionOf);
+        indexOfObjectUnionOf = str.indexOf(objectUnionOf);
+        System.out.println("??indexOfObjectIntersectionOf: "+ indexOfObjectIntersectionOf+" indexOfObjectUnionOf: "+indexOfObjectUnionOf);
+        
+        if(type.equals(objectIntersectionOf)){
+            str = str.substring(indexOfObjectIntersectionOf+objectIntersectionOf.length()+1, str.length()-1);
+        }else if(type.equals(objectUnionOf)){
+            str = str.substring(indexOfObjectUnionOf+objectUnionOf.length()+1, str.length()-1);
+        }
+        System.out.println("4--"+str);
+        String[] values = str.split(" ");
+               
+        for(String s:values){
+            System.out.println("-="+s);
+        }
+        
+        List list = new ArrayList();
+        
+        for(int i=0,j;i<values.length;i++,j++){
+            j=i+1;
+            System.out.println("i= "+i+ " j= "+j);
+            String temp = values[i];
+            
+            if(temp.startsWith(objectIntersectionOf) || temp.startsWith(objectUnionOf)){                
+                for(;j<values.length;j++){
+                    temp += " "+values[j];
+                    if(values[j].endsWith("))")){                       
+                        break; 
+                    }
+                }
+                i = j;
+                list.add(temp);
+            }else{
+                list.add(values[i]);
+            }
+        }
+        String[] news = new String[list.size()];
+        list.toArray(news);
+        System.out.println(":::"+list.toString());
+        for(String s:news){
+            System.out.println("======="+s);
+        }
+        return news;
+    }
 
     //TODO -----
-    public String[] getEquivalentClasses(String className) {
+    public String[] getEquivalentClasses2(String className) {
         OWLClass cls = myFactory.getOWLClass(this.prefixManager.getIRI(className));
         Set<OWLClassExpression> oceset = cls.getEquivalentClasses(myOntology);System.out.println(cls.toString());
         if (oceset.size() < 1) {
@@ -208,11 +378,18 @@ public class OWLAPIWrapper {
         System.out.println(oceset.size()+this.defaultNameSpace);
         String str = expression[0].toString();
         System.out.println(str);
-        str = str.replaceAll(this.defaultNameSpace, "");
+        str = removeNameSpace(str);
         System.out.println(str+"\n");
+        str = this.replaceExpression2Symbol(str);
+        System.out.println(str+"\n");
+        String type = str.substring(0, str.indexOf("("));
+        System.out.println("type: "+type);
+        str = replaceLogic(type ,replaceLogic2Symbol(type,str));
+        System.out.println("==="+str+"\n");
         OWLEquivalentClassesAxiom oeca = this.myFactory.getOWLEquivalentClassesAxiom(expression);
         System.out.println(oeca.toString());
-        Set<OWLClassExpression> oceset2 = oeca.getNestedClassExpressions();System.out.println(oceset2.size());
+        Set<OWLClassExpression> oceset2 = oeca.getNestedClassExpressions();
+        System.out.println(oceset2.size());
         for(OWLClassExpression s:oceset2)
         {
             System.out.println(s.toString());
@@ -225,6 +402,19 @@ public class OWLAPIWrapper {
 //        this.equivalentClasses = this.getClassShortNames(expression);   
 //        return equivalentClasses;
         return null;
+    }
+    
+    public String getEquivalentClasses(String className) {
+        OWLClass cls = myFactory.getOWLClass(this.prefixManager.getIRI(className));
+        Set<OWLClassExpression> oceset = cls.getEquivalentClasses(myOntology);
+        if (oceset.size() < 1) {
+            return null;
+        }
+        
+        OWLClassExpression[] expression = new OWLClassExpression[oceset.size()];
+        oceset.toArray(expression);
+        
+        return expression[0].toString();
     }
 
     public String[] getIndividuals(String className) {
