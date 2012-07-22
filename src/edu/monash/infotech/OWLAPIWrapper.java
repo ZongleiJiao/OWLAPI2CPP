@@ -114,6 +114,16 @@ public class OWLAPIWrapper {
     public String getDefaultNameSpace() {
         return this.defaultNameSpace;
     }
+    
+    public String[] getOntologyInformation(){
+        String[] info = null;
+        
+        myOntology.getAxiomCount();
+        myOntology.getLogicalAxiomCount();
+        
+        
+        return info;
+    }
 
 ////////////////////////////////Class (Start)////////////////////////////////////////////////////
     //get all OWLClasses
