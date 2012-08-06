@@ -8,5 +8,4 @@ owlfiles/*.xml
 # Build Netbeans build directories.
 build/
 dist/
-src/edu/monash/infotech/test/
 nbproject/private/
