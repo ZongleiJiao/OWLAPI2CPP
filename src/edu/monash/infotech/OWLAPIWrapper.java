@@ -74,7 +74,11 @@ public class OWLAPIWrapper {
     private String[] disjointPropertyNames;
 
 //    private String[] dataProperties;
-//    private String[] oObjectProperties;    
+//    private String[] oObjectProperties;
+    
+    
+    /////////////attributes for db///////////////
+    private String ontologyURI;
 
     /////////////////////////////Public Methods///////////////////////////////////////
     //loading ontology file && initializing
@@ -85,7 +89,7 @@ public class OWLAPIWrapper {
             OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
             myFactory = manager.getOWLDataFactory();
             myOntology = manager.loadOntologyFromOntologyDocument(file);
-
+            
             //get default namespace  
             OWLOntologyXMLNamespaceManager ooxnm = new OWLOntologyXMLNamespaceManager(manager, myOntology);
             defaultNameSpace = ooxnm.getDefaultNamespace();
@@ -100,7 +104,7 @@ public class OWLAPIWrapper {
             Set<OWLDeclarationAxiom> set = myOntology.getAxioms(AxiomType.DECLARATION);
             alDeclarationAxiom = new OWLAxiom[set.size()];
             set.toArray(alDeclarationAxiom);
-
+                               
             return myOntology.toString();
         } catch (OWLOntologyCreationException ex) {
             Logger.getLogger(OWLAPIWrapper.class.getName()).log(Level.SEVERE, null, ex);
@@ -110,6 +114,36 @@ public class OWLAPIWrapper {
             return "Error! Contact authors!(No.2)";
         }
     }
+    
+    ///////////////////////////////////Functions for db start////////////////////
+    public String getOntologyName(){
+        ontologyURI = myOntology.getOntologyID().getOntologyIRI().toURI().toString();
+        String name = ontologyURI.substring(ontologyURI.lastIndexOf("/")+1,ontologyURI.lastIndexOf("."));
+        return name;
+    }
+    
+    public String getOntologyURI(){
+        return this.ontologyURI;
+    }
+    
+    public int getNumOfClass(){
+        return this.allOWLClasses.length;
+    }
+    
+    public int getNumOfIndividual(){
+        return this.allIndividualNames.length;
+    }
+    
+    public int getNumOfProperty(){
+        return getAllDataProperties().length+this.getObjectProperties().length;
+    }
+    
+    public void getImports(){
+        Set<OWLOntology> importOntologies = this.myOntology.getImports();
+    }
+    
+    
+    ///////////////////////////////////Functions for db end////////////////////
 
     public String getDefaultNameSpace() {
         return this.defaultNameSpace;
