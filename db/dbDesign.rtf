@@ -1,0 +1,218 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1187
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\fs24 \cf0 delete from Ontologies;\
+delete from Classes;\
+delete from Entities;\
+delete from AnonymousClasses;\
+delete from DisjointClasses;\
+delete from EquivalentClasses;\
+delete from IndividualRelations;\
+delete from Individuals;\
+delete from subSumption;\
+delete from OntologyImports;\
+delete from Properties;\
+delete from PropertyDomains;\
+delete from PropertyRanges;\
+\
+----SQLite does not have a storage class set aside for storing dates and/or times. Instead, the built-in Date And Time Functions of SQLite are capable of storing dates and times as TEXT, REAL, or INTEGER values:\
+----	TEXT as ISO8601 strings ("YYYY-MM-DD HH:MM:SS.SSS").\
+----	REAL as Julian day numbers, the number of days since noon in Greenwich on November 24, 4714 B.C. according to the proleptic Gregorian calendar.\
+----	INTEGER as Unix Time, the number of seconds since 1970-01-01 00:00:00 UTC.\
+----Applications can chose to store dates and times in any of these formats and freely convert between formats using the built-in date and time functions.\
+\
+\
+--** use foreign key or not? (see http://www.sqlite.org/foreignkeys.html to enable it).\
+--** history list? -->Depend on Zonglei's requirement.\
+\
+-----------------------------Ontologies------------------------------\
+\
+--Table ontologies: 1) ID 2) Name 3) namespace 4)URL/FilePath 5)CreatedTime 6)LastModifiedTime 7)Description\
+\
+Create Table Ontologies(\
+	[ontologyid]		integer PRIMARY KEY ASC, \
+	[name]			varchar(100),\
+	[namespace]		varchar(200),\
+	[URL]			varchar(300),\
+	[CreatedTime]		integer,\
+	[LastModifiedTime]	integer,\
+	[Description]		varchar(500),\
+	[NumOfClass]		integer,\
+	[NumOfIndividual]	integer,\
+	[NumOfProperty]		integer	\
+);\
+Create Table OntologyImports(\
+	[Ontologyid]		integer, \
+	[ImportID]		integer\
+	); -- index\
+-----------------------------Annotation------------------------------\
+Create Table Annotation(\
+	[AnnotationID]	integer,\
+	[EntityID]	integer,\
+	[EntityType]	integer,\
+	[Annotation]	varchar[1000],\
+	[AnnotationProperty]	varchar[100]\
+)\
+-----------------------------Entities--------------------------------\
+Create Table Entities(\
+	[EntityID]	integer PRIMARY KEY ASC, \
+	[OntologyID]	integer,\
+	[Type]		integer,	-- (class,property,individual)\
+	[isAnonymous]	boolean\
+);\
+\
+-----------------------------Classes---------------------------------\
+\
+--Table Classes: 1)ID 2)OntologyID 3)URI 4)shortname 5)prefix/namespace???\
+--Include anonymous classes or not???\
+Create Table Classes(\
+	[EntityID]	INTEGER REFERENCES Entities(EntityID), --foreign key\
+	[OntologyID]	integer,\
+	[URI]		varchar(300),\
+	[shortname]	varchar(100),\
+	[namespace]	varchar(200),\
+);\
+Create table AnonymousClasses(\
+	[EntityID]	INTEGER REFERENCES Entities(EntityID), --foreign key\
+	[AnonymousType]	integer,\
+	[AnonymousExpression]	varchar(1000)\
+);\
+\
+\
+\
+--Create Table Axiom(\
+--	[EntityID]	INTEGER REFERENCES Entities(EntityID),\
+--	[Type]		integer,\
+--	[InExpression]	integer\
+--);\
+\
+--Table SubClasses: 1)ID 2)ClassID 3)SubclassID\
+Create Table subSumption(\
+	[ParentID]	integer,\
+	[ChildID]	integer\
+);\
+\
+--Table EquivalentClasses: 1)ID 2)ClassID 3)Expression\
+Create Table EquivalentClasses(\
+	[ClassID]	integer,\
+	[EquivalentClassID] integer,\
+	[Expression]	varchar(1000)\
+);\
+\
+--Table DisjointClasses: 1)ID 2)ClassID 3)DisjointClassID 4)Expression???If the disjoint class is an anonymous class or equ class???\
+Create Table DisjointClasses(\
+	[ClassID]		integer,\
+	[DisjointClassID] integer,\
+	[Expression]		varchar(1000)\
+);\
+\
+\
+-----------------------------Individuals-----------------------------\
+--Table Individuals: 1)id 2)ClassID 3)name \
+--* any other field? \
+--* Should one individual have only one class or multi-classes?\
+--**Study http://www.w3.org/TR/owl-ref/#Individual for details and improve this table \
+Create Table Individuals(\
+	[EntityID]	INTEGER REFERENCES Entities(EntityID),\
+	[OntologyID]	integer,\
+	[URI]		integer,\
+	[name]		varchar(100)		\
+);\
+\
+--assertion table\
+--\
+--Create table ...like classes\
+Create Table IndividualRelations(\
+	[IndividualID]	integer,\
+	[ClassID]	integer\
+);\
+\
+-----------------------------Properties------------------------------\
+--separate table for each kind of property\
+\
+Create Table Properties(\
+	[EntityID]	INTEGER REFERENCES Entities(EntityID),\
+	[OntologyID]	integer,\
+	[URI]		varchar(300),\
+	[shortname]	varchar(100),\
+	[typeID]		integer,\
+	[encodedPropertyNameAndType]	varchar(300),\
+	[DataRange]	varchar(100)		\
+        );\
+\
+Create Table PropertyTypes(\
+	[propertyTypeID] integer PRIMARY KEY,\
+	[DataProperty]	integer,-- 0- no, 1- yes\
+	[ObjectProperty]	integer,\
+	[AnnotationProperty]	integer,\
+	[isFunctional]	integer, \
+	[isInverse]		integer,\
+	[isInverseFunctional]	integer,\
+	[isSymmetric]		integer,\
+	[isAsymmetric]		integer,\
+	[isTransitive]		integer,\
+	[isReflexive]		integer,\
+	[isIrreflexive]		integer\
+)\
+\
+--Table PropertyDomains: 1)id 2)propertyID 3)ClassID\
+Create Table PropertyDomains(\
+	[propertyID]	integer,\
+	[ClassID]	integer		\
+);\
+\
+--Table PropertyRanges: 1)id 2)propertyID 3)ClassID\
+Create Table PropertyRanges(\
+	[propertyID]	integer,\
+	[ClassID]	integer		\
+);\
+\
+--Table SubProperties: 1)id 2)propertyID 3)subPropertyID\
+Create Table SubProperties(\
+	[propertyID]	integer,\
+	[subPropertyID]	integer		\
+);\
+\
+--Table disjointproperties: 1)id 2)propertyID 3)disjointPropertyID\
+Create Table disjointproperties(\
+	[propertyID]	integer,\
+	[Expression]	varchar(1000)		\
+);\
+\
+--Table EquvalentProperties 1)id 2)propertyID 3)Expression\
+Create Table EquvalentProperties(\
+	[propertyID]	integer,\
+	[Expression]	varchar(1000)		\
+);\
+\
+Create Table AnonymousProperties(\
+	[EntityID]	INTEGER REFERENCES Entities(EntityID),\
+	[Type]		integer,\
+	[InExpression]	integer\
+);\
+\
+--AxiomForProperty\
+\
+-----------------------------KeyConcepts------------------------------\
+\
+--Table KeyConcept_Classes: 0)id 1)OntologyID 2)ClassID 3)ClassName 4)Score 5)LastVisitedTime 6)NumberOfVisits 7)LandMark\
+Create Table KeyConcept_Classes(\
+	[id]			integer PRIMARY KEY ASC,\
+	[OntologyID]		integer, --to avoid join multiple tables for KC\
+	[ClassID]		integer,\
+	[ClassName]		varchar(100), --useless??or to avoid join multiple tables for KC\
+	[Score]			real,\
+	[LastVisitedTime]	integer,\
+	[NumberOfVisits]	integer,\
+	[LandMark]		integer\
+);\
+\
+create table historyRecord(\
+	[ontologyID]	integer,\
+	[entityID]	integer,\
+	[entityType]	integer,	--1-class 2-individual 3-property\
+	[visitTime]	integer\
+);}
